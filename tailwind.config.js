@@ -1,8 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [],
+  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        green: {
+          light: '#A2C3BD',
+          DEFAULT: '#61988E',
+          dark: '#3A5A54'
+        },
+        red: {
+          light: '#B79298',
+          DEFAULT: '#702632',
+          dark: '#391319'
+        },
+        'neutral-100': '#FFFFFF',
+        'neutral-70': '#7F7F7F',
+        'neutral-0': '#000000',
+      },
+      fontFamily: {
+        exo: ["Exo", "sans-serif"],
+        tabular: ["Tabular", "sans-serif"],
+      }
+    },
   },
   plugins: [],
 }

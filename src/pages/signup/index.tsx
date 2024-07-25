@@ -15,7 +15,6 @@ type FormValues = {
     password: string
 }
 
-
 function Signup({ goToPage }: SignupProps) {
     const {
         handleSubmit,
@@ -43,9 +42,10 @@ function Signup({ goToPage }: SignupProps) {
             <i className="bi-arrow-left-short text-icon-large" onClick={(e) => goToPage(e)} />
 
             {/* Signup form */}
-            <div className="FormContainer w-full my-auto bordered">
+            <div className="FormContainer w-full my-auto">
 
                 <div className="md:w-[60vw] lg:w-[40vw] p-4 bordered mx-auto">
+
                     <p className="font-exo font-medium text-subtitle">Sign up to Tick</p>
                     <p className="font-tabular text-small mb-6">Create a free, lifetime account with Tick today!</p>
 
@@ -104,7 +104,6 @@ function Signup({ goToPage }: SignupProps) {
                             </div>
                         </div>
                     </form>
-
 
                 </div>
 

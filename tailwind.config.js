@@ -22,6 +22,18 @@ export default {
       fontFamily: {
         exo: ["Exo", "sans-serif"],
         tabular: ["Tabular", "sans-serif"],
+      },
+      fontSize: {
+        regular: "18px",
+        small: "12px",
+        title: "84px",
+        subtitle: "24px",
+        button: "18px",
+        heading: "36px",
+        inputLabel: "14px",
+        inputText: "18px",
+        inputTag: "12px",
+
       }
     },
   },

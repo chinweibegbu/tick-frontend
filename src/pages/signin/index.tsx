@@ -1,16 +1,12 @@
-import { MouseEventHandler } from "react";
-
-
 type SigninProps = {
-    goHome: MouseEventHandler
+    goToPage: Function
 }
 
-function Signin({ goHome }: SigninProps) {
-    
+function Signin({ goToPage }: SigninProps) {
 
     return (
         <div className="Signin">
-            <i className="bi-arrow-left-short text-subtitle" onClick={goHome}/>
+            <i className="bi-arrow-left-short text-icon-large" onClick={(e) => goToPage(e)}/>
             Sign In
         </div>
     );

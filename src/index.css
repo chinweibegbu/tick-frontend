@@ -9,4 +9,8 @@
     i {
         @apply hover:cursor-pointer;
     }
+
+    .bordered {
+        border: solid 1px black;
+    }
 }

@@ -1,6 +1,7 @@
 import './App.css'
 import { Route, Routes, useNavigate } from "react-router-dom";
 
+import Container from "./components/Container";
 import Header from "./components/Header";
 import Landing from "./pages/landing";
 import Signin from "./pages/signin";
@@ -10,22 +11,24 @@ import Dashboard from "./pages/dashboard";
 function App() {
 
   const navigate = useNavigate();
-  const goBack = () => {
-    navigate(-1);
-  }
-  const goHome = () => {
-    navigate("/");
+  // @ts-ignore
+  const goToPage = (e: React.MouseEvent<HTMLElement>, path?: string) : void => {
+    navigate("/" + (path ? path : ""));
   }
 
   return (
     <div className='App min-h-screen'>
-      <Header goHome={goHome} />
-      <Routes>
-        <Route path="/" element={<Landing handleHome={goHome} />} />
-        <Route path="/signin" element={<Signin goHome={goBack} />} />
-        <Route path="/signup" element={<Signup goHome={goBack} />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
+      <Header goToPage={goToPage} />
+
+      <Container>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/signin" element={<Signin goToPage={goToPage} />} />
+          <Route path="/signup" element={<Signup goToPage={goToPage} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Container>
+
     </div>
   )
 }

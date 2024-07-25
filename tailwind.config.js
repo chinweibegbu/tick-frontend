@@ -17,6 +17,7 @@ export default {
         },
         'neutral-100': '#FFFFFF',
         'neutral-70': '#7F7F7F',
+        'neutral-30': '#C3C3C3',
         'neutral-0': '#000000',
       },
       fontFamily: {
@@ -33,6 +34,10 @@ export default {
         inputLabel: "14px",
         inputText: "18px",
         inputTag: "12px",
+
+        "icon-large": "36px",
+        "icon-regular": "24px",
+        "icon-small": "18px",
 
       }
     },

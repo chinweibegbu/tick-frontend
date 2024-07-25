@@ -8,7 +8,7 @@ function Landing() {
     }
 
     return (
-        <div className="Landing min-h-[calc(100vh-3.5rem)] pb-20 flex flex-col items-center justify-center">
+        <div className="Landing h-full pb-20 flex flex-col items-center justify-center">
             <p className="font-exo font-black text-title">
                 TICK
             </p>

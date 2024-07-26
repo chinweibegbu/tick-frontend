@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ButtonWithIcons from "../../components/ButtonWithIcon";
 import Task from "../../components/Task";
 import AddTaskModal from "../../components/AddTaskModal";
 import EditTaskModal from "../../components/EditTaskModal";
 import DeleteTaskConfirmModal from "../../components/DeleteTaskConfirmModal";
+
+type DashboardProps = {
+    setIsLoggedIn: Function
+}
 
 const tasks = [
     {
@@ -29,7 +33,7 @@ const tasks = [
     }
 ];
 
-function Dashboard() {
+function Dashboard({ setIsLoggedIn }: DashboardProps) {
     const [showAddTaskModal, setShowAddTaskModal] = useState(false);
     const toggleAddTaskModal = (mode: boolean) => {
         // console.log(showAddTaskModal ? "Hid add modal" : "Showed add modal")
@@ -47,6 +51,10 @@ function Dashboard() {
         // console.log(showDeleteTaskConfirmModal ? "Hid delete confirm modal" : "Showed delete confirm modal")
         setShowDeleteTaskConfirmModal(mode);
     }
+
+    useEffect(()=> {
+        setIsLoggedIn(true);
+    });
 
     return (
         <>

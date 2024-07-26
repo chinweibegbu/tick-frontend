@@ -1,12 +1,22 @@
+import { useEffect } from "react";
+
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 
-function Landing() {
+type LandingProps = {
+    setIsLoggedIn: Function
+}
+
+function Landing({ setIsLoggedIn }: LandingProps) {
     const navigate = useNavigate();
     const handleClick = (path: string) => {
         navigate("/"+path);
     }
 
+    useEffect(()=> {
+        setIsLoggedIn(false);
+    });
+    
     return (
         <div className="Landing h-full pb-20 flex flex-col items-center justify-center">
             <p className="font-exo font-black text-title">

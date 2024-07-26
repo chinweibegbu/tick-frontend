@@ -1,6 +1,6 @@
 type LinkTextProps = {
     text: string
-    path: string
+    path?: string
     goToPage: Function
 }
 

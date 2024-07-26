@@ -3,11 +3,12 @@ import { useState } from "react";
 type TaskProps = {
     details: string
     isImportant: boolean
+    taskId: number
     toggleEditTaskModal: Function
     toggleDeleteTaskConfirmModal: Function
 };
 
-function Task({ details, isImportant, toggleEditTaskModal, toggleDeleteTaskConfirmModal }: TaskProps) {
+function Task({ details, isImportant, taskId, toggleEditTaskModal, toggleDeleteTaskConfirmModal }: TaskProps) {
     const [isCompleted, setIsCompleted] = useState(false);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -53,7 +54,7 @@ function Task({ details, isImportant, toggleEditTaskModal, toggleDeleteTaskConfi
                                     className="flex p-2 text-green-light border border-neutral-100 rounded-t-md hover:cursor-pointer hover:text-green hover:bg-neutral-20"
                                     role="menuitem"
                                     tabIndex={-1}
-                                    onClick={() => toggleEditTaskModal(true)}>
+                                    onClick={() => toggleEditTaskModal(true, taskId)}>
                                     <i className="bi-pencil"></i> <p className="ms-2">Edit</p>
                                 </div>
                                 <div

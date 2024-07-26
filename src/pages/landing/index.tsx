@@ -17,8 +17,8 @@ function Landing() {
             </p>
 
             <div className="mt-10 md:w-[40%] lg:w-[25%] flex flex-col md:flex-row md:justify-between">
-                <Button text="Sign Up" isFilled={true} handleClick={() => handleClick("signup")} />
-                <Button text="Sign In" isFilled={false} handleClick={() => handleClick("signin")} />
+                <Button text="Sign Up" handleClick={() => handleClick("signup")} />
+                <Button text="Sign In" handleClick={() => handleClick("signin")} />
             </div>
         </div>
     );

@@ -13,11 +13,13 @@ export default {
         red: {
           light: '#B79298',
           DEFAULT: '#702632',
-          dark: '#391319'
+          dark: '#391319',
+          pure: '#FF0000'
         },
         'neutral-100': '#FFFFFF',
         'neutral-70': '#7F7F7F',
-        'neutral-30': '#C3C3C3',
+        'neutral-40': '#C3C3C3',
+        'neutral-20': '#F3F3F3',
         'neutral-0': '#000000',
       },
       fontFamily: {
@@ -39,6 +41,9 @@ export default {
         "icon-regular": "24px",
         "icon-small": "18px",
 
+      },
+      variants: {
+        padding: ['last']
       }
     },
   },

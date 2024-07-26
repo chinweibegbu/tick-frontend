@@ -52,8 +52,8 @@ function Signin({ goToPage }: SigninProps) {
                         {/* Email */}
                         <div className="LongTextInput flex flex-col mb-1 md:mb-3">
                             <label className="font-tabular text-inputLabel">Email</label>
-                            <input {...register("email", { required: true })} type="text" className="font-tabular font-medium text-inputText w-full p-1.5 border border-black rounded-md"></input>
-                            <p className={"font-tabular text-small " + (errors.email ? "text-neutral-30" : "text-neutral-100")}>
+                            <input {...register("email", { required: true })} type="text" className="font-tabular font-medium text-inputText w-full p-1.5 border border-neutral-0 rounded-md"></input>
+                            <p className={"font-tabular text-small " + (errors.email ? "text-red-pure" : "text-neutral-100")}>
                                 This field is required
                             </p>
                         </div>
@@ -61,18 +61,18 @@ function Signin({ goToPage }: SigninProps) {
                         {/* Password */}
                         <div className="LongTextInput flex flex-col mb-1 md:mb-3">
                             <label className="font-tabular text-inputLabel">Password</label>
-                            <div className="flex border border-black rounded-md p-1.5 focus-within:border-2 focus-within:p-[0.3rem]">
+                            <div className="flex border border-neutral-0 rounded-md p-1.5 focus-within:border-2 focus-within:p-[0.3rem]">
                                 <input  {...register("password", { required: true })} type={showPassword ? "text" : "password"} className="font-tabular font-medium text-inputText w-full focus:outline-none focus:border-none"></input>
                                 <i className={(showPassword ? "bi-eye-slash" : "bi-eye") + " text-neutral-0 text-icon-regular mr-2"} onClick={togglePassword} />
                             </div>
-                            <p className={"font-tabular text-small " + (errors.password ? "text-neutral-30" : "text-neutral-100")}>
+                            <p className={"font-tabular text-small " + (errors.password ? "text-red-pure" : "text-neutral-100")}>
                                 This field is required
                             </p>
                         </div>
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Log in" isFilled={true} />
+                            <Button text="Log in" />
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Don't have an account yet?</p>
                                 &nbsp;

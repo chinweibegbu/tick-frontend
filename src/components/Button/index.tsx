@@ -1,19 +1,23 @@
 import { MouseEventHandler } from "react";
 
 type ButtonProps = {
-    text: string;
-    isFilled: boolean;
-    handleClick?: MouseEventHandler;
+    text: string
+    handleClick?: MouseEventHandler
+    isDelete?: boolean
 };
 
-function Button({ text, isFilled, handleClick }: ButtonProps) {
+function Button({ text, handleClick, isDelete }: ButtonProps) {
     return (
         <button
-            className={"font-tabular font-medium text-regular py-2 px-6 rounded-md border-4 border-green" + (isFilled ? " bg-green text-neutral-100 hover:bg-green-dark hover:border-green-dark" : " hover:bg-green-light hover:text-white")}
+            className={"font-tabular font-medium text-regular py-2 px-6 rounded-md" + (
+                (!isDelete)
+                    ? " border-4 border-green bg-green text-neutral-100 hover:bg-green-dark hover:border-green-dark"
+                    : " border-4 border-red-light bg-red-light text-neutral-100 hover:bg-red-dark hover:border-red-dark"
+            )}
             onClick={handleClick}
-            type="submit">
+            type="submit" >
             {text}
-        </button>
+        </button >
     );
 }
 

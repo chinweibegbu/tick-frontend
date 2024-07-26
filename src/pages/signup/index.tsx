@@ -103,6 +103,7 @@ function Signup({ goToPage }: SignupProps) {
                                 <LinkText text="Sign in" path="signin" goToPage={goToPage} />
                             </div>
                         </div>
+                        
                     </form>
 
                 </div>

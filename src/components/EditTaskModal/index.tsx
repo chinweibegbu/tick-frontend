@@ -1,6 +1,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
 
+import { EditTaskFormSchema } from "../../schemas";
 import { EditTaskModalProps, EditTaskFormValues } from "../../models";
 import Button from "../Button";
 
@@ -24,7 +26,8 @@ function EditTaskModal({ toggleModal, taskId, tasks, editTask }: EditTaskModalPr
     defaultValues: {
       details: taskData.details,
       isImportant: taskData.isImportant
-    }
+    }, 
+    resolver: yupResolver(EditTaskFormSchema)
   });
 
   const onSubmit: SubmitHandler<EditTaskFormValues> = (data) => {
@@ -54,8 +57,8 @@ function EditTaskModal({ toggleModal, taskId, tasks, editTask }: EditTaskModalPr
             value={taskData.details}
             onChange={(e) => setTaskData({ ...taskData, details: e.target.value })}
           ></input>
-          <p className={"font-tabular text-small " + (errors.details ? "text-red-pure" : "text-neutral-100")}>
-            This field is required
+          <p className={"font-tabular text-small " + (errors.details ? "text-red-pure" : "invisible")}>
+            {errors.details?.message || "Placeholder"}
           </p>
         </div>
 

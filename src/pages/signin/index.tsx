@@ -1,21 +1,24 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
+import { SigninFormSchema } from "../../schemas";
 import { SigninProps, SigninFormValues } from "../../models";
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
 
 function Signin({ goToPage }: SigninProps) {
+
     const {
         handleSubmit,
         register,
         formState: { errors },
-    } = useForm<SigninFormValues>();
+    } = useForm<SigninFormValues>({ resolver: yupResolver(SigninFormSchema) });
 
     const onSubmit: SubmitHandler<SigninFormValues> = (data) => {
         // Add user to DB
         console.log(data);
-        
+
         // Go to dashboard
         goToPage(MouseEvent, "dashboard");
     }
@@ -44,9 +47,9 @@ function Signin({ goToPage }: SigninProps) {
                         {/* Email */}
                         <div className="LongTextInput flex flex-col mb-1 md:mb-3">
                             <label className="font-tabular text-inputLabel">Email</label>
-                            <input {...register("email", { required: true })} type="text" className="font-tabular font-medium text-inputText w-full p-1.5 border border-neutral-0 rounded-md"></input>
-                            <p className={"font-tabular text-small " + (errors.email ? "text-red-pure" : "text-neutral-100")}>
-                                This field is required
+                            <input {...register("email")} type="text" className="font-tabular font-medium text-inputText w-full p-1.5 border border-neutral-0 rounded-md"></input>
+                            <p className={"font-tabular text-small " + (errors.email ? "text-red-pure" : "invisible")}>
+                                { errors.email?.message || "Placeholder" }
                             </p>
                         </div>
 
@@ -54,11 +57,11 @@ function Signin({ goToPage }: SigninProps) {
                         <div className="LongTextInput flex flex-col mb-1 md:mb-3">
                             <label className="font-tabular text-inputLabel">Password</label>
                             <div className="flex border border-neutral-0 rounded-md p-1.5 focus-within:border-2 focus-within:p-[0.3rem]">
-                                <input  {...register("password", { required: true })} type={showPassword ? "text" : "password"} className="font-tabular font-medium text-inputText w-full focus:outline-none focus:border-none"></input>
+                                <input  {...register("password")} type={showPassword ? "text" : "password"} className="font-tabular font-medium text-inputText w-full focus:outline-none focus:border-none"></input>
                                 <i className={(showPassword ? "bi-eye-slash" : "bi-eye") + " text-neutral-0 text-icon-regular mr-2"} onClick={togglePassword} />
                             </div>
-                            <p className={"font-tabular text-small " + (errors.password ? "text-red-pure" : "text-neutral-100")}>
-                                This field is required
+                            <p className={"font-tabular text-small " + (errors.password ? "text-red-pure" : "invisible")}>
+                                { errors.password?.message || "Placeholder" }
                             </p>
                         </div>
 

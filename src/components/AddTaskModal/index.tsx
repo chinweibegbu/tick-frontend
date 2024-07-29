@@ -1,5 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
+import { AddTaskFormSchema } from "../../schemas";
 import { AddTaskModalProps, AddTaskFormValues } from "../../models";
 import Button from "../Button";
 
@@ -8,7 +10,7 @@ function AddTaskModal({ toggleModal, addTask }: AddTaskModalProps) {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<AddTaskFormValues>();
+  } = useForm<AddTaskFormValues>({ resolver: yupResolver(AddTaskFormSchema) });
 
 
   const onSubmit: SubmitHandler<AddTaskFormValues> = (data) => {
@@ -36,17 +38,17 @@ function AddTaskModal({ toggleModal, addTask }: AddTaskModalProps) {
             type="text"
             className="font-tabular font-medium text-inputText w-full p-1.5 border border-neutral-0 rounded-md focus:outline-none placeholder:italic placeholder:text-neutral-40 placeholder:font-normal"
             placeholder="Task description"></input>
-          <p className={"font-tabular text-small " + (errors.details ? "text-red-pure" : "text-neutral-100")}>
-            This field is required
+          <p className={"font-tabular text-small " + (errors.details ? "text-red-pure" : "invisible")}>
+            {errors.details?.message || "Placeholder"}
           </p>
         </div>
 
         {/* "Important" Checkbox */}
         <div className="CheckBoxInput flex items-center">
-          <input 
-          id="isImportant"
-          type="checkbox"
-          {...register("isImportant")} />
+          <input
+            id="isImportant"
+            type="checkbox"
+            {...register("isImportant")} />
           <label htmlFor="isImportant" className="font-tabular text-small ml-2">Mark as important</label>
         </div>
 

@@ -1,10 +1,4 @@
-import { MouseEventHandler } from "react";
-
-type ButtonWithIconsProps = {
-    text: string
-    iconClass: string
-    handleClick?: MouseEventHandler
-};
+import { ButtonWithIconsProps } from "../../models";
 
 function ButtonWithIcons({ text, iconClass, handleClick }: ButtonWithIconsProps) {
     return (

@@ -1,28 +1,18 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import { SignupProps, SignupFormValues } from "../../models";
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
-
-type SignupProps = {
-    goToPage: Function
-}
-
-type FormValues = {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-}
 
 function Signup({ goToPage }: SignupProps) {
     const {
         handleSubmit,
         register,
         formState: { errors },
-    } = useForm<FormValues>();
+    } = useForm<SignupFormValues>();
 
-    const onSubmit: SubmitHandler<FormValues> = (data) => {
+    const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
         // Add user to DB
         console.log(data);
         

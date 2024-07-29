@@ -1,19 +1,17 @@
 import { useState } from "react";
+import { TaskProps } from "../../models";
 
-type TaskProps = {
-    details: string
-    isImportant: boolean
-    taskId: number
-    toggleEditTaskModal: Function
-    toggleDeleteTaskConfirmModal: Function
-};
-
-function Task({ details, isImportant, taskId, toggleEditTaskModal, toggleDeleteTaskConfirmModal }: TaskProps) {
-    const [isCompleted, setIsCompleted] = useState(false);
+function Task({ taskId, details, isImportant, isCompleted, toggleModal, tasks, setTasks }: TaskProps) {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-    const markAsCompleted = () => {
-        setIsCompleted(!isCompleted);
+    const toggleCompleted = () => {
+        setTasks(tasks.map(task => {
+            if (task.taskId === taskId) {
+                return { ...task, isCompleted: !isCompleted }
+            } else {
+                return task;
+            }
+        }));
     };
 
     const toggleDropdown = () => {
@@ -25,7 +23,7 @@ function Task({ details, isImportant, taskId, toggleEditTaskModal, toggleDeleteT
             <div className="flex dropdown">
                 <i
                     className={"mr-2" + (isCompleted ? " bi-check-square-fill" : " bi-square")}
-                    onClick={markAsCompleted}
+                    onClick={toggleCompleted}
                 />
                 <p className={"font-tabular font-medium" + (isCompleted ? " line-through" : "") + (isDropdownVisible ? " font-bold" : "")}>
                     {details}
@@ -54,14 +52,26 @@ function Task({ details, isImportant, taskId, toggleEditTaskModal, toggleDeleteT
                                     className="flex p-2 text-green-light border border-neutral-100 rounded-t-md hover:cursor-pointer hover:text-green hover:bg-neutral-20"
                                     role="menuitem"
                                     tabIndex={-1}
-                                    onClick={() => toggleEditTaskModal(true, taskId)}>
+                                    onClick={() => {
+                                        // Toggle EditTask Modal to show
+                                        toggleModal(true, "editTask", taskId)
+
+                                        // Hide dropdown
+                                        setIsDropdownVisible(false);
+                                    }}>
                                     <i className="bi-pencil"></i> <p className="ms-2">Edit</p>
                                 </div>
                                 <div
                                     className="flex p-2 text-red-light border border-neutral-100 rounded-b-md hover:cursor-pointer hover:text-red hover:bg-neutral-20"
                                     role="menuitem"
                                     tabIndex={-1}
-                                    onClick={() => toggleDeleteTaskConfirmModal(true)}>
+                                    onClick={() => {
+                                        // Toggle DeleteTaskConfirm Modal to show
+                                        toggleModal(true, "deleteTaskConfirm", taskId);
+
+                                        // Hide dropdown
+                                        setIsDropdownVisible(false);
+                                    }}>
                                     <i className="bi-trash"></i> <p className="ms-2">Delete</p>
                                 </div>
                             </div>

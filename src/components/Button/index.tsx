@@ -1,10 +1,4 @@
-import { MouseEventHandler } from "react";
-
-type ButtonProps = {
-    text: string
-    handleClick?: MouseEventHandler
-    isDelete?: boolean
-};
+import { ButtonProps } from "../../models";
 
 function Button({ text, handleClick, isDelete }: ButtonProps) {
     return (

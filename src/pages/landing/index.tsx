@@ -1,11 +1,8 @@
 import { useEffect } from "react";
 
+import { LandingProps } from "../../models";
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
-
-type LandingProps = {
-    setIsLoggedIn: Function
-}
 
 function Landing({ setIsLoggedIn }: LandingProps) {
     const navigate = useNavigate();

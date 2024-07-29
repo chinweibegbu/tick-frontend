@@ -1,8 +1,4 @@
-import { ReactNode } from "react";
-
-type ContainerProps = {
-    children: ReactNode
-}
+import { ContainerProps } from "../../models";
 
 function Container({ children }: ContainerProps) {
     return (

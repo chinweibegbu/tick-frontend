@@ -1,30 +1,22 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import { AddTaskModalProps, AddTaskFormValues } from "../../models";
 import Button from "../Button";
 
-type AddTaskModalProps = {
-  toggleAddTaskModal: Function
-}
-
-type FormValues = {
-  details: string
-  isImportant: boolean
-}
-
-function AddTaskModal({ toggleAddTaskModal }: AddTaskModalProps) {
+function AddTaskModal({ toggleModal, addTask }: AddTaskModalProps) {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<AddTaskFormValues>();
 
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const onSubmit: SubmitHandler<AddTaskFormValues> = (data) => {
     // Save task to DB
-    console.log(data);
+    addTask(data);
 
-    // Go to dashboard
-    toggleAddTaskModal(false);
+    // Close Add Task modal
+    toggleModal(false, "addTask");
   }
 
   return (
@@ -32,7 +24,7 @@ function AddTaskModal({ toggleAddTaskModal }: AddTaskModalProps) {
     <div className="AddTaskModal bg-neutral-100 bordered h-fit w-[50%] pl-4 pr-2 pb-4 absolute right-0 left-0 top-0 bottom-0 m-auto">
 
       <div className="w-full flex justify-end">
-        <i className="bi-x text-icon-large" onClick={() => toggleAddTaskModal(false)} />
+        <i className="bi-x text-icon-large" onClick={() => toggleModal(false, "addTask")} />
       </div>
 
       <form className="mx-2" onSubmit={handleSubmit(onSubmit)}>
@@ -54,7 +46,6 @@ function AddTaskModal({ toggleAddTaskModal }: AddTaskModalProps) {
           <input 
           id="isImportant"
           type="checkbox"
-          value="" className=""
           {...register("isImportant")} />
           <label htmlFor="isImportant" className="font-tabular text-small ml-2">Mark as important</label>
         </div>

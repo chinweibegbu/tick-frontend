@@ -1,24 +1,34 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useDispatch } from "react-redux";
 
+import { toggleModal } from "../../store/modalsSlice";
+import { addTask } from "../../store/tasksSlice";
+import { AppDispatch } from "../../store/store";
 import { AddTaskFormSchema } from "../../schemas";
-import { AddTaskModalProps, AddTaskFormValues } from "../../models";
+import { AddTaskFormValues } from "../../models";
+
 import Button from "../Button";
 
-function AddTaskModal({ toggleModal, addTask }: AddTaskModalProps) {
+// ----------------------  END IMPORTS ---------------------------------
+
+function AddTaskModal() {
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<AddTaskFormValues>({ resolver: yupResolver(AddTaskFormSchema) });
 
-
   const onSubmit: SubmitHandler<AddTaskFormValues> = (data) => {
     // Save task to DB
-    addTask(data);
+    // addTask(data); --> useState() version
+    dispatch(addTask({taskId:9, ...data, isCompleted:false}));
 
     // Close Add Task modal
-    toggleModal(false, "addTask");
+    dispatch(toggleModal({modalName:"addTaskModal", showModal:false}));
   }
 
   return (
@@ -26,7 +36,7 @@ function AddTaskModal({ toggleModal, addTask }: AddTaskModalProps) {
     <div className="AddTaskModal bg-neutral-100 bordered h-fit w-[50%] pl-4 pr-2 pb-4 absolute right-0 left-0 top-0 bottom-0 m-auto">
 
       <div className="w-full flex justify-end">
-        <i className="bi-x text-icon-large" onClick={() => toggleModal(false, "addTask")} />
+        <i className="bi-x text-icon-large" onClick={ () => dispatch(toggleModal({ modalName:"addTaskModal", showModal:false })) } />
       </div>
 
       <form className="mx-2" onSubmit={handleSubmit(onSubmit)}>

@@ -1,19 +1,18 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+
+import { editTask, getTaskById } from "../../store/tasksSlice";
+import { toggleModal } from "../../store/modalsSlice";
+import { AppDispatch } from "../../store/store";
 import { TaskProps } from "../../models";
 
-function Task({ taskId, details, isImportant, isCompleted, toggleModal, tasks, setTasks }: TaskProps) {
+// ----------------------  END IMPORTS ---------------------------------
+
+function Task({ taskId, details, isImportant, isCompleted }: TaskProps) {
+
+    const dispatch = useDispatch<AppDispatch>();
+
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
-    const toggleCompleted = () => {
-        setTasks(tasks.map(task => {
-            if (task.taskId === taskId) {
-                return { ...task, isCompleted: !isCompleted }
-            } else {
-                return task;
-            }
-        }));
-    };
-
     const toggleDropdown = () => {
         setIsDropdownVisible(!isDropdownVisible);
     };
@@ -23,7 +22,12 @@ function Task({ taskId, details, isImportant, isCompleted, toggleModal, tasks, s
             <div className="flex dropdown">
                 <i
                     className={"mr-2" + (isCompleted ? " bi-check-square-fill" : " bi-square")}
-                    onClick={toggleCompleted}
+                    onClick={() => dispatch(editTask({
+                        taskId: taskId,
+                        details: details,
+                        isImportant: isImportant,
+                        isCompleted: !(isCompleted)
+                    }))}
                 />
                 <p className={"font-tabular font-medium" + (isCompleted ? " line-through" : "") + (isDropdownVisible ? " font-bold" : "")}>
                     {details}
@@ -53,8 +57,11 @@ function Task({ taskId, details, isImportant, isCompleted, toggleModal, tasks, s
                                     role="menuitem"
                                     tabIndex={-1}
                                     onClick={() => {
+                                        // Update the id to get
+                                        dispatch(getTaskById(taskId));
+
                                         // Toggle EditTask Modal to show
-                                        toggleModal(true, "editTask", taskId)
+                                        dispatch(toggleModal({ modalName: "editTaskModal", showModal: true, potentialTaskId: taskId }));
 
                                         // Hide dropdown
                                         setIsDropdownVisible(false);
@@ -67,7 +74,7 @@ function Task({ taskId, details, isImportant, isCompleted, toggleModal, tasks, s
                                     tabIndex={-1}
                                     onClick={() => {
                                         // Toggle DeleteTaskConfirm Modal to show
-                                        toggleModal(true, "deleteTaskConfirm", taskId);
+                                        dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: true, potentialTaskId: taskId }));
 
                                         // Hide dropdown
                                         setIsDropdownVisible(false);

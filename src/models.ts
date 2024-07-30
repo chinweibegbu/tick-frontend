@@ -1,3 +1,4 @@
+import { AxiosError, AxiosResponse } from "axios"
 import { MouseEventHandler, ReactNode } from "react"
 
 // Landing Forms
@@ -26,21 +27,9 @@ export type DashboardProps = {
     setIsLoggedIn: Function
 }
 
-export type AddTaskModalProps = {
-    toggleModal: Function
-    addTask: Function
-}
-
 export type AddTaskFormValues = {
     details: string
     isImportant: boolean
-}
-
-export type EditTaskModalProps = {
-    toggleModal: Function
-    taskId: number
-    tasks: Array<TaskModel>
-    editTask: Function
 }
 
 export type EditTaskFormValues = {
@@ -48,9 +37,10 @@ export type EditTaskFormValues = {
     isImportant: boolean
 }
 
-export type DeleteTaskConfirmModalProps = {
-    toggleModal: Function
-    deleteTask: MouseEventHandler
+export type showModalModel = {
+    modalName: string
+    showModal: boolean
+    potentialTaskId?: number
 }
 
 // UI Components
@@ -70,9 +60,6 @@ export type TaskProps = {
     details: string
     isImportant: boolean
     isCompleted: boolean
-    toggleModal: Function
-    tasks: Array<TaskModel>
-    setTasks: Function
 }
 
 
@@ -101,4 +88,10 @@ export type LinkTextProps = {
     text: string
     path?: string
     goToPage: Function
+}
+
+// API Calls
+export interface TasksResults {
+    data?: AxiosResponse<TaskModel[]>;
+    error?: AxiosError;
 }

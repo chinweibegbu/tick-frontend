@@ -1,5 +1,5 @@
 import api from "./axios";
-import { ApiCallResponse, ApiResponse, TaskModel, UserModel } from "../models";
+import { ApiCallResponse, ApiResponse, TaskModel } from "../models";
 import { AxiosResponse } from "axios";
 
 export const getTasksApiCall = (token: string) => {
@@ -64,4 +64,26 @@ export const addTaskApiCall = (token: string, newTask: TaskModel) => {
       });
   });
   return AddTask;
+};
+
+export const toggleCompleteTaskApiCall = (token: string, taskIdToToggle: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const ToggleCompleteTask = new Promise<ApiCallResponse<TaskModel>>((resolve) => {
+    api
+      .post(
+        `/Task/toggleCompleteTask/${taskIdToToggle}`,
+        undefined,
+        config
+      )
+      .then((response: AxiosResponse<ApiResponse<TaskModel>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<TaskModel>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return ToggleCompleteTask;
 };

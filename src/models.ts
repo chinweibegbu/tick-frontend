@@ -36,7 +36,7 @@ export type EditTaskFormValues = {
 export type showModalModel = {
     modalName: string
     showModal: boolean
-    potentialTaskId?: number
+    potentialTaskId?: string
 }
 
 // UI Components
@@ -45,14 +45,14 @@ export type ContainerProps = {
 }
 
 export interface TaskModel {
-    taskId?: number
+    id?: string
     details: string
     isImportant: boolean
     isCompleted: boolean
 }
 
 export type TaskProps = {
-    taskId?: number
+    id?: string
     details: string
     isImportant: boolean
     isCompleted: boolean

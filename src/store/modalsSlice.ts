@@ -7,8 +7,8 @@ const initialState = {
   showAddTaskModal: false,
   showEditTaskModal: false,
   showDeleteTaskConfirmModal: false,
-  taskIdToEdit: -1,
-  taskIdToDelete: -1
+  taskIdToEdit: "AUD",
+  taskIdToDelete: "AUD"
 };
 
 const modalsSlice = createSlice({

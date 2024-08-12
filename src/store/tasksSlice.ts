@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall } from "../apiCalls/tasks";
+import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall, toggleCompleteTaskApiCall } from "../apiCalls/tasks";
 import { TaskModel } from "../models";
 
 const initialState = {
@@ -113,14 +113,43 @@ export const addTask = createAsyncThunk
     }
   });
 
+export const toggleCompleteTask = createAsyncThunk
+  <
+    TaskModel,
+    {
+      token: string,
+      taskId: string
+    },
+    { rejectValue: string }
+  >
+  ("toggleCompleteTask", async (values, thunkApi) => {
+    try {
+      const { data, error } = await toggleCompleteTaskApiCall(values.token, values.taskId);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    getTaskById: (state, action: PayloadAction<number>) => {
-      const taskId = action.payload;
+    getTaskById: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
 
-      const existingTask = state.tasks.find((task: TaskModel) => task.taskId === taskId);
+      const existingTask = state.tasks.find((task: TaskModel) => task.id === id);
       if (existingTask) {
         state.currentTask = existingTask;
       } else {
@@ -128,34 +157,23 @@ const tasksSlice = createSlice({
       }
     },
     editTask: (state, action: PayloadAction<TaskModel>) => {
-      const { taskId, details, isImportant } = action.payload;
+      const { id, details, isImportant } = action.payload;
 
       console.log(state.tasks);
 
       state.tasks = state.tasks.map(task => {
-        if (task.taskId === taskId) {
+        if (task.id === id) {
           return { ...task, details: details, isImportant: isImportant }
         } else {
           return task;
         }
       })
     },
-    toggleCompleteTask: (state, action: PayloadAction<number>) => {
-      const taskId = action.payload;
-
-      state.tasks = state.tasks.map(task => {
-        if (task.taskId === taskId) {
-          return { ...task, isCompleted: !(task.isCompleted) }
-        } else {
-          return task;
-        }
-      })
-    },
-    deleteTask: (state, action: PayloadAction<number>) => {
-      const taskId = action.payload;
-      const existingTask = state.tasks.find((task: TaskModel) => task.taskId === taskId);
+    deleteTask: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const existingTask = state.tasks.find((task: TaskModel) => task.id === id);
       if (existingTask) {
-        state.tasks = state.tasks.filter((task: TaskModel) => task.taskId !== taskId);
+        state.tasks = state.tasks.filter((task: TaskModel) => task.id !== id);
       }
     },
   },
@@ -230,10 +248,33 @@ const tasksSlice = createSlice({
           state.loading = false;
           console.log("addTask() failed");
         }
+      )
+      
+      // Toggle Complete task
+      .addCase(
+        toggleCompleteTask.pending,
+        (state) => {
+          state.loading = true;
+          console.log("toggleCompleteTask() pending...");
+        }
+      )
+      .addCase(
+        toggleCompleteTask.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("toggleCompleteTask() successful!");
+        }
+      )
+      .addCase(
+        toggleCompleteTask.rejected,
+        (state) => {
+          state.loading = false;
+          console.log("toggleCompleteTask() failed");
+        }
       );
   },
 });
 
-export const { editTask, toggleCompleteTask, deleteTask, getTaskById } = tasksSlice.actions;
+export const { editTask, deleteTask, getTaskById } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

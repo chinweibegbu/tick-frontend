@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { toggleCompleteTask, getTaskById } from "../../store/tasksSlice";
+import { toggleCompleteTask, getTaskById, fetchTasksByUserId } from "../../store/tasksSlice";
 import { toggleModal } from "../../store/modalsSlice";
 import { AppDispatch } from "../../store/store";
 import { TaskProps } from "../../models";
 
 // ----------------------  END IMPORTS ---------------------------------
 
-function Task({ taskId, details, isImportant, isCompleted }: TaskProps) {
+function Task({ id, details, isImportant, isCompleted }: TaskProps) {
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -23,8 +23,14 @@ function Task({ taskId, details, isImportant, isCompleted }: TaskProps) {
                 <i
                     className={"mr-2" + (isCompleted ? " bi-check-square-fill" : " bi-square")}
                     onClick={() => {
-                        console.log(taskId);
-                        dispatch(toggleCompleteTask(taskId));
+                        const token = localStorage.getItem("token");
+                        dispatch(toggleCompleteTask({ token: token!, taskId: id! }))
+                        .then((response) => {
+                            if (response.type === "toggleCompleteTask/fulfilled") {
+                              // Reload tasks
+                              dispatch(fetchTasksByUserId({ token: token! }));
+                            }
+                          });
                     }}
                 />
                 <p className={"font-tabular font-medium" + (isCompleted ? " line-through" : "") + (isDropdownVisible ? " font-bold" : "")}>
@@ -56,10 +62,10 @@ function Task({ taskId, details, isImportant, isCompleted }: TaskProps) {
                                     tabIndex={-1}
                                     onClick={() => {
                                         // Update the id to get
-                                        dispatch(getTaskById(taskId));
+                                        dispatch(getTaskById(id!));
 
                                         // Toggle EditTask Modal to show
-                                        dispatch(toggleModal({ modalName: "editTaskModal", showModal: true, potentialTaskId: taskId }));
+                                        dispatch(toggleModal({ modalName: "editTaskModal", showModal: true, potentialTaskId: id }));
 
                                         // Hide dropdown
                                         setIsDropdownVisible(false);
@@ -72,7 +78,7 @@ function Task({ taskId, details, isImportant, isCompleted }: TaskProps) {
                                     tabIndex={-1}
                                     onClick={() => {
                                         // Toggle DeleteTaskConfirm Modal to show
-                                        dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: true, potentialTaskId: taskId }));
+                                        dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: true, potentialTaskId: id }));
 
                                         // Hide dropdown
                                         setIsDropdownVisible(false);

@@ -23,10 +23,6 @@ export type SignupFormValues = {
 }
 
 // Dashboard Forms
-export type DashboardProps = {
-    setIsLoggedIn: Function
-}
-
 export type AddTaskFormValues = {
     details: string
     isImportant: boolean
@@ -62,10 +58,25 @@ export type TaskProps = {
     isCompleted: boolean
 }
 
+export type UserModel = {
+    defaultRole: number
+    defaultRoleMeaning: string
+    email: string
+    expiresIn: number
+    expiryDate: string
+    firstName: string
+    id: string
+    isActive: boolean
+    isLoggedIn: boolean
+    jwToken: string
+    lastLoginTime: string
+    lastName: string
+    username: string
+}
+
 
 export type HeaderProps = {
     goToPage: MouseEventHandler
-    isLoggedIn: boolean
 }
 
 export type LandingProps = {
@@ -91,7 +102,23 @@ export type LinkTextProps = {
 }
 
 // API Calls
-export interface TasksResults {
-    data?: AxiosResponse<TaskModel[]>;
+export interface ApiCallResponse<T> {
+    data?: ApiResponse<T>;
     error?: AxiosError;
+}
+
+export interface ApiResponse<T> {
+    code: number
+    data: T
+    errors: AxiosError
+    message: string
+    succeeded: boolean
+    pageMeta?: PageMeta
+}
+
+export interface PageMeta {
+    pageNumber: number
+    pageSize: number
+    totalRecords: number
+    totalPages: number
 }

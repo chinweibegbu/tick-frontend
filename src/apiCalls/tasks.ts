@@ -1,18 +1,46 @@
 import api from "./axios";
-import { TasksResults } from "../models";
+import { ApiCallResponse, ApiResponse, TaskModel } from "../models";
+import { AxiosResponse } from "axios";
 
-export const getTasks = () => {
-  const FetchTasks = new Promise<TasksResults>((resolve) => {
+export const getTasksApiCall = (token: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const GetTasks = new Promise<ApiCallResponse<TaskModel[]>>((resolve) => {
     api
       .get(
-        "https://66a8b3b5e40d3aa6ff590940.mockapi.io/api/v1/tasks"
+        "/Task/getTasks",
+        config
       )
-      .then((response: TasksResults["data"]) => {
-        resolve({ data: response });
+      .then((response: AxiosResponse<ApiResponse<TaskModel[]>>) => {
+        resolve({ data: response.data });
       })
-      .catch((err: TasksResults["error"]) => {
+      .catch((err: ApiResponse<ApiCallResponse<TaskModel[]>>["errors"]) => {
         resolve({ error: err });
       });
   });
-  return FetchTasks;
+  return GetTasks;
+};
+
+export const getTasksByUserIdApiCall = (token: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const GetTasksByUserId = new Promise<ApiCallResponse<TaskModel[]>>((resolve) => {
+    api
+      .get(
+        `/Task/getTasksByUserId`,
+        config
+      )
+      .then((response: AxiosResponse<ApiResponse<TaskModel[]>>) => {
+        console.log(response);
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<TaskModel[]>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return GetTasksByUserId;
 };

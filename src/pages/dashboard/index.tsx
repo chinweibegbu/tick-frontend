@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchTasks } from "../../store/tasksSlice";
+import { fetchTasksByUserId } from "../../store/tasksSlice";
 import { toggleModal } from "../../store/modalsSlice";
 import { AppDispatch, RootState } from "../../store/store";
-import { DashboardProps } from "../../models";
 
 import ButtonWithIcons from "../../components/ButtonWithIcon";
 import Task from "../../components/Task";
@@ -14,7 +13,7 @@ import DeleteTaskConfirmModal from "../../components/DeleteTaskConfirmModal";
 
 // ----------------------  END IMPORTS ---------------------------------
 
-function Dashboard({ setIsLoggedIn }: DashboardProps) {
+function Dashboard() {
     const dispatch = useDispatch<AppDispatch>();
 
     // Load user's tasks
@@ -22,12 +21,9 @@ function Dashboard({ setIsLoggedIn }: DashboardProps) {
     const { showAddTaskModal, showEditTaskModal, showDeleteTaskConfirmModal } = useSelector((state: RootState) => state.modalsReducer);
 
     useEffect(() => {
-        // Fetch all tasks
-        dispatch(fetchTasks()).then(() => {
-            // Update logged in status
-            setIsLoggedIn(true);
-        });
-
+        // Fetch tasks by userId
+        const token = localStorage.getItem("token");
+        dispatch(fetchTasksByUserId({ token: token! }));
     }, []);
 
     return (

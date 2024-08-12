@@ -1,7 +1,9 @@
 import { HeaderProps } from "../../models";
 import LinkText from "../LinkText";
 
-function Header({ goToPage, isLoggedIn }: HeaderProps) {
+// ----------------------  END IMPORTS ---------------------------------
+
+function Header({ goToPage }: HeaderProps) {
     return (
         <div className="Header h-14 bg-green flex justify-between items-center px-12 ">
             <div className="Logo size-10 rounded-full flex" onClick={(e) => goToPage(e)}>
@@ -10,7 +12,7 @@ function Header({ goToPage, isLoggedIn }: HeaderProps) {
             </div>
             <div className="text-neutral-100">
                 {
-                    isLoggedIn
+                    localStorage.getItem("token")
                         ? <LinkText text="Log out" goToPage={goToPage} />
                         : null
                 }

@@ -1,13 +1,22 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { authenticateUser } from "../../store/usersSlice";
+import { AppDispatch, RootState } from "../../store/store";
 import { SigninFormSchema } from "../../schemas";
 import { SigninProps, SigninFormValues } from "../../models";
+
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
 
+// ----------------------  END IMPORTS ---------------------------------
+
 function Signin({ goToPage }: SigninProps) {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -15,12 +24,17 @@ function Signin({ goToPage }: SigninProps) {
         formState: { errors },
     } = useForm<SigninFormValues>({ resolver: yupResolver(SigninFormSchema) });
 
-    const onSubmit: SubmitHandler<SigninFormValues> = (data) => {
-        // Add user to DB
-        console.log(data);
-
-        // Go to dashboard
-        goToPage(MouseEvent, "dashboard");
+    const onSubmit: SubmitHandler<SigninFormValues> = async (data) => {
+        // Login user
+        dispatch(authenticateUser(data))
+            .then((response) => {
+                if (response.type === "authenticateUser/fulfilled") {
+                    goToPage(MouseEvent, "dashboard");
+                }
+                if (response.type === "authenticateUser/rejected") {
+                    // Do nothing
+                }
+            });
     }
 
     const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +56,10 @@ function Signin({ goToPage }: SigninProps) {
                     <p className="font-exo font-medium text-subtitle">Sign in to Tick</p>
                     <p className="font-tabular text-small mb-6">Manage your tasks with ease and efficiency!</p>
 
+                    <p className={"font-tabular text-small " + (errorMessage ? "text-red-pure" : "invisible")}>
+                        {errorMessage || "Placeholder"}
+                    </p>
+
                     <form onSubmit={handleSubmit(onSubmit)}>
 
                         {/* Email */}
@@ -49,7 +67,7 @@ function Signin({ goToPage }: SigninProps) {
                             <label className="font-tabular text-inputLabel">Email</label>
                             <input {...register("email")} type="text" className="font-tabular font-medium text-inputText w-full p-1.5 border border-neutral-0 rounded-md"></input>
                             <p className={"font-tabular text-small " + (errors.email ? "text-red-pure" : "invisible")}>
-                                { errors.email?.message || "Placeholder" }
+                                {errors.email?.message || "Placeholder"}
                             </p>
                         </div>
 
@@ -61,7 +79,7 @@ function Signin({ goToPage }: SigninProps) {
                                 <i className={(showPassword ? "bi-eye-slash" : "bi-eye") + " text-neutral-0 text-icon-regular mr-2"} onClick={togglePassword} />
                             </div>
                             <p className={"font-tabular text-small " + (errors.password ? "text-red-pure" : "invisible")}>
-                                { errors.password?.message || "Placeholder" }
+                                {errors.password?.message || "Placeholder"}
                             </p>
                         </div>
 

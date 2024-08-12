@@ -7,7 +7,6 @@ import Landing from "./pages/landing";
 import Signin from "./pages/signin";
 import Signup from "./pages/signup";
 import Dashboard from "./pages/dashboard";
-import { useState } from 'react';
 
 function App() {
 
@@ -17,18 +16,16 @@ function App() {
     navigate("/" + (path ? path : ""));
   }
 
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
   return (
     <div className='App min-h-screen'>
-      <Header goToPage={goToPage} isLoggedIn={isLoggedIn} />
+      <Header goToPage={goToPage} />
 
       <Container>
         <Routes>
-          <Route path="/" element={<Landing setIsLoggedIn={setLoggedIn} />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/signin" element={<Signin goToPage={goToPage} />} />
           <Route path="/signup" element={<Signup goToPage={goToPage} />} />
-          <Route path="/dashboard" element={<Dashboard setIsLoggedIn={setLoggedIn} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Container>
 

@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getTasksApiCall, getTasksByUserIdApiCall } from "../apiCalls/tasks";
+import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall } from "../apiCalls/tasks";
 import { TaskModel } from "../models";
 
 const initialState = {
@@ -22,7 +22,7 @@ export const fetchTasks = createAsyncThunk
     { token: string },
     { rejectValue: string }
   >
-  ("fetchTasks", async (values, thunkApi) => {    
+  ("fetchTasks", async (values, thunkApi) => {
     // --> Case #1: API call is success
     try {
       // Destructure the object of type TasksResult which is returned via a Promise
@@ -70,7 +70,6 @@ export const fetchTasksByUserId = createAsyncThunk
 
       // --> Case #1b: API calls return object has `data` property
       if (data) {
-        console.log(data, " --> Async Thunk");
         return data.data;
       }
 
@@ -79,6 +78,36 @@ export const fetchTasksByUserId = createAsyncThunk
     }
 
     // --> Case #2: API call is not successful
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
+
+export const addTask = createAsyncThunk
+  <
+    TaskModel,
+    {
+      token: string,
+      newTask: TaskModel
+    },
+    { rejectValue: string }
+  >
+  ("addTask", async (values, thunkApi) => {
+    try {
+      const { data, error } = await addTaskApiCall(values.token, values.newTask);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
     catch (error) {
       return thunkApi.rejectWithValue("An unexpected error occurred");
     }
@@ -98,18 +127,25 @@ const tasksSlice = createSlice({
         console.log("Something is wrong");
       }
     },
-    addTask: (state, action: PayloadAction<TaskModel>) => {
-      // Call API
-
-      // Update state with results of API call
-      state.tasks = [action.payload, ...state.tasks];
-    },
     editTask: (state, action: PayloadAction<TaskModel>) => {
-      const { taskId, details, isImportant, isCompleted } = action.payload;
+      const { taskId, details, isImportant } = action.payload;
+
+      console.log(state.tasks);
 
       state.tasks = state.tasks.map(task => {
         if (task.taskId === taskId) {
-          return { taskId: taskId, details: details, isImportant: isImportant, isCompleted: isCompleted }
+          return { ...task, details: details, isImportant: isImportant }
+        } else {
+          return task;
+        }
+      })
+    },
+    toggleCompleteTask: (state, action: PayloadAction<number>) => {
+      const taskId = action.payload;
+
+      state.tasks = state.tasks.map(task => {
+        if (task.taskId === taskId) {
+          return { ...task, isCompleted: !(task.isCompleted) }
         } else {
           return task;
         }
@@ -125,6 +161,7 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch all tasks
       .addCase(
         fetchTasks.pending,
         (state) => {
@@ -147,6 +184,8 @@ const tasksSlice = createSlice({
           console.log("fetchTasks() failed");
         }
       )
+
+      // Fetch tasks by user ID
       .addCase(
         fetchTasksByUserId.pending,
         (state) => {
@@ -168,10 +207,33 @@ const tasksSlice = createSlice({
           state.loading = false;
           console.log("fetchTasksByUserId() failed");
         }
+      )
+
+      // Add task
+      .addCase(
+        addTask.pending,
+        (state) => {
+          state.loading = true;
+          console.log("addTask() pending...");
+        }
+      )
+      .addCase(
+        addTask.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("addTask() successful!");
+        }
+      )
+      .addCase(
+        addTask.rejected,
+        (state) => {
+          state.loading = false;
+          console.log("addTask() failed");
+        }
       );
   },
 });
 
-export const { addTask, editTask, deleteTask, getTaskById } = tasksSlice.actions;
+export const { editTask, toggleCompleteTask, deleteTask, getTaskById } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

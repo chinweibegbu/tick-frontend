@@ -45,14 +45,14 @@ export type ContainerProps = {
 }
 
 export interface TaskModel {
-    taskId: number
+    taskId?: number
     details: string
     isImportant: boolean
     isCompleted: boolean
 }
 
 export type TaskProps = {
-    taskId: number
+    taskId?: number
     details: string
     isImportant: boolean
     isCompleted: boolean
@@ -106,6 +106,14 @@ export interface ApiCallResponse<T> {
     data?: ApiResponse<T>;
     error?: AxiosError;
 }
+
+// How Victor would approach it:
+//
+// export type GetTasksByUserIdApiResponse = ApiResponse<TaskModel[]>
+// export interface ApiCallResponse<T> {
+//     data?: GetTasksByUserIdResponse;
+//     error?: AxiosError;
+// }
 
 export interface ApiResponse<T> {
     code: number

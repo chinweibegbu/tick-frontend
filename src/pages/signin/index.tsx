@@ -31,9 +31,6 @@ function Signin({ goToPage }: SigninProps) {
                 if (response.type === "authenticateUser/fulfilled") {
                     goToPage(MouseEvent, "dashboard");
                 }
-                if (response.type === "authenticateUser/rejected") {
-                    // Do nothing
-                }
             });
     }
 

@@ -1,5 +1,5 @@
 import api from "./axios";
-import { ApiCallResponse, ApiResponse, TaskModel } from "../models";
+import { ApiCallResponse, ApiResponse, TaskModel, UserModel } from "../models";
 import { AxiosResponse } from "axios";
 
 export const getTasksApiCall = (token: string) => {
@@ -35,7 +35,6 @@ export const getTasksByUserIdApiCall = (token: string) => {
         config
       )
       .then((response: AxiosResponse<ApiResponse<TaskModel[]>>) => {
-        console.log(response);
         resolve({ data: response.data });
       })
       .catch((err: ApiResponse<ApiCallResponse<TaskModel[]>>["errors"]) => {
@@ -43,4 +42,26 @@ export const getTasksByUserIdApiCall = (token: string) => {
       });
   });
   return GetTasksByUserId;
+};
+
+export const addTaskApiCall = (token: string, newTask: TaskModel) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const AddTask = new Promise<ApiCallResponse<TaskModel>>((resolve) => {
+    api
+      .post(
+        "/Task/addTask",
+        newTask,
+        config
+      )
+      .then((response: AxiosResponse<ApiResponse<TaskModel>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<TaskModel>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return AddTask;
 };

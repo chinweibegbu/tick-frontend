@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { editTask, getTaskById } from "../../store/tasksSlice";
+import { toggleCompleteTask, getTaskById } from "../../store/tasksSlice";
 import { toggleModal } from "../../store/modalsSlice";
 import { AppDispatch } from "../../store/store";
 import { TaskProps } from "../../models";
@@ -18,16 +18,14 @@ function Task({ taskId, details, isImportant, isCompleted }: TaskProps) {
     };
 
     return (
-        <div className={"Task flex items-center justify-between content-center bg-neutral-20 rounded-md mb-2 p-3 " + (isImportant ? " border border-neutral-0 border-2" : "")}>
+        <div className={"Task flex items-center justify-between content-center bg-neutral-20 rounded-md mb-2 p-3 " + (isImportant ? " border-neutral-0 border-2" : "")}>
             <div className="flex dropdown">
                 <i
                     className={"mr-2" + (isCompleted ? " bi-check-square-fill" : " bi-square")}
-                    onClick={() => dispatch(editTask({
-                        taskId: taskId,
-                        details: details,
-                        isImportant: isImportant,
-                        isCompleted: !(isCompleted)
-                    }))}
+                    onClick={() => {
+                        console.log(taskId);
+                        dispatch(toggleCompleteTask(taskId));
+                    }}
                 />
                 <p className={"font-tabular font-medium" + (isCompleted ? " line-through" : "") + (isDropdownVisible ? " font-bold" : "")}>
                     {details}

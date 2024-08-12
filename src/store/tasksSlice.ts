@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall, toggleCompleteTaskApiCall } from "../apiCalls/tasks";
+import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall, toggleCompleteTaskApiCall, editTaskApiCall } from "../apiCalls/tasks";
 import { TaskModel } from "../models";
 
 const initialState = {
@@ -113,6 +113,35 @@ export const addTask = createAsyncThunk
     }
   });
 
+export const editTask = createAsyncThunk
+  <
+    TaskModel,
+    {
+      token: string,
+      updatedTask: TaskModel
+    },
+    { rejectValue: string }
+  >
+  ("editTask", async (values, thunkApi) => {
+    try {
+      const { data, error } = await editTaskApiCall(values.token, values.updatedTask);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
 export const toggleCompleteTask = createAsyncThunk
   <
     TaskModel,
@@ -155,19 +184,6 @@ const tasksSlice = createSlice({
       } else {
         console.log("Something is wrong");
       }
-    },
-    editTask: (state, action: PayloadAction<TaskModel>) => {
-      const { id, details, isImportant } = action.payload;
-
-      console.log(state.tasks);
-
-      state.tasks = state.tasks.map(task => {
-        if (task.id === id) {
-          return { ...task, details: details, isImportant: isImportant }
-        } else {
-          return task;
-        }
-      })
     },
     deleteTask: (state, action: PayloadAction<string>) => {
       const id = action.payload;
@@ -249,7 +265,30 @@ const tasksSlice = createSlice({
           console.log("addTask() failed");
         }
       )
-      
+
+      // Edit task
+      .addCase(
+        editTask.pending,
+        (state) => {
+          state.loading = true;
+          console.log("editTask() pending...");
+        }
+      )
+      .addCase(
+        editTask.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("editTask() successful!");
+        }
+      )
+      .addCase(
+        editTask.rejected,
+        (state) => {
+          state.loading = false;
+          console.log("editTask() failed");
+        }
+      )
+
       // Toggle Complete task
       .addCase(
         toggleCompleteTask.pending,
@@ -275,6 +314,6 @@ const tasksSlice = createSlice({
   },
 });
 
-export const { editTask, deleteTask, getTaskById } = tasksSlice.actions;
+export const { deleteTask, getTaskById } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

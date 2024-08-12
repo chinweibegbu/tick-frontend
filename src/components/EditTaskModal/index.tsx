@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 
 import { toggleModal } from "../../store/modalsSlice";
-import { getTaskById, editTask } from "../../store/tasksSlice";
+import { getTaskById, editTask, fetchTasksByUserId } from "../../store/tasksSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { EditTaskFormSchema } from "../../schemas";
 import { EditTaskFormValues } from "../../models";
@@ -36,10 +36,17 @@ function EditTaskModal() {
 
   const onSubmit: SubmitHandler<EditTaskFormValues> = (data) => {
     // Edit task in DB
-    dispatch(editTask({ ...currentTask, details: data.details, isImportant: data.isImportant }));
+    const token = localStorage.getItem("token");
+    dispatch(editTask({ token: token!, updatedTask: { ...currentTask, details: data.details, isImportant: data.isImportant } }))
+      .then((response) => {
+        if (response.type === "editTask/fulfilled") {
+          // Reload tasks
+          dispatch(fetchTasksByUserId({ token: token! }));
 
-    // Close Edit Task modal
-    dispatch(toggleModal({ modalName: "editTaskModal", showModal: false }));
+          // Close Edit Task modal
+          dispatch(toggleModal({ modalName: "editTaskModal", showModal: false }));
+        }
+      });
   }
 
   // Load Task data

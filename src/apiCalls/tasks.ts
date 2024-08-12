@@ -66,6 +66,28 @@ export const addTaskApiCall = (token: string, newTask: TaskModel) => {
   return AddTask;
 };
 
+export const editTaskApiCall = (token: string, updatedTask: TaskModel) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const EditTask = new Promise<ApiCallResponse<TaskModel>>((resolve) => {
+    api
+      .post(
+        `/Task/editTask/${updatedTask.id}`,
+        updatedTask,
+        config
+      )
+      .then((response: AxiosResponse<ApiResponse<TaskModel>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<TaskModel>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return EditTask;
+};
+
 export const toggleCompleteTaskApiCall = (token: string, taskIdToToggle: string) => {
   const config = {
     headers: { Authorization: `Bearer ${token}` }

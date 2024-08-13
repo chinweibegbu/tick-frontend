@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall, toggleCompleteTaskApiCall, editTaskApiCall } from "../apiCalls/tasks";
+import { getTasksApiCall, getTasksByUserIdApiCall, addTaskApiCall, toggleCompleteTaskApiCall, editTaskApiCall, deleteTaskApiCall } from "../apiCalls/tasks";
 import { TaskModel } from "../models";
 
 const initialState = {
@@ -171,6 +171,34 @@ export const toggleCompleteTask = createAsyncThunk
     }
   });
 
+export const deleteTask = createAsyncThunk
+  <
+    string,
+    {
+      token: string,
+      taskId: string
+    },
+    { rejectValue: string }
+  >
+  ("deleteTask", async (values, thunkApi) => {
+    try {
+      const { data, error } = await deleteTaskApiCall(values.token, values.taskId);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
@@ -184,14 +212,7 @@ const tasksSlice = createSlice({
       } else {
         console.log("Something is wrong");
       }
-    },
-    deleteTask: (state, action: PayloadAction<string>) => {
-      const id = action.payload;
-      const existingTask = state.tasks.find((task: TaskModel) => task.id === id);
-      if (existingTask) {
-        state.tasks = state.tasks.filter((task: TaskModel) => task.id !== id);
-      }
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -310,10 +331,33 @@ const tasksSlice = createSlice({
           state.loading = false;
           console.log("toggleCompleteTask() failed");
         }
+      )
+
+      // Delete task
+      .addCase(
+        deleteTask.pending,
+        (state) => {
+          state.loading = true;
+          console.log("deleteTask() pending...");
+        }
+      )
+      .addCase(
+        deleteTask.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("deleteTask() successful!");
+        }
+      )
+      .addCase(
+        deleteTask.rejected,
+        (state) => {
+          state.loading = false;
+          console.log("deleteTask() failed");
+        }
       );
   },
 });
 
-export const { deleteTask, getTaskById } = tasksSlice.actions;
+export const { getTaskById } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

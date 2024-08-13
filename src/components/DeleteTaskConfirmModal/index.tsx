@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 
 import { toggleModal } from "../../store/modalsSlice";
-import { deleteTask } from "../../store/tasksSlice";
+import { deleteTask, fetchTasksByUserId } from "../../store/tasksSlice";
 import { AppDispatch, RootState } from "../../store/store";
 
 import Button from "../Button";
@@ -9,7 +9,7 @@ import Button from "../Button";
 // ----------------------  END IMPORTS ---------------------------------
 
 function DeleteTaskConfirmModal() {
-  
+
   const dispatch = useDispatch<AppDispatch>();
   const { taskIdToDelete } = useSelector((state: RootState) => state.modalsReducer);
 
@@ -27,13 +27,20 @@ function DeleteTaskConfirmModal() {
         <p className="font-tabular text-small">This is an irreversible action</p>
 
         {/* "Delete Task" button */}
-        <div className="w-full pt-4"> 
+        <div className="w-full pt-4">
           <Button isDelete={true} text="Yes" handleClick={() => {
-            // Delete task from DB
-            dispatch(deleteTask(taskIdToDelete));
+            // Edit task in DB
+            const token = localStorage.getItem("token");
+            dispatch(deleteTask({ token: token!, taskId: taskIdToDelete }))
+              .then((response) => {
+                if (response.type === "deleteTask/fulfilled") {
+                  // Reload tasks
+                  dispatch(fetchTasksByUserId({ token: token! }));
 
-            // Close Delete Task Cofirm Modal
-            dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: false }));
+                  // Close Edit Task modal
+                  dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: false }));
+                }
+              });
           }} />
         </div>
       </div>

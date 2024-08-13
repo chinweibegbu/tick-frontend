@@ -109,3 +109,25 @@ export const toggleCompleteTaskApiCall = (token: string, taskIdToToggle: string)
   });
   return ToggleCompleteTask;
 };
+
+export const deleteTaskApiCall = (token: string, taskIdToDelete: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const DeleteTask = new Promise<ApiCallResponse<string>>((resolve) => {
+    api
+      .post(
+        `/Task/deleteTask/${taskIdToDelete}`,
+        undefined,
+        config
+      )
+      .then((response: AxiosResponse<ApiResponse<string>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<string>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return DeleteTask;
+};

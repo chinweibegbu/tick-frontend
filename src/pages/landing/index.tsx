@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
+
+// ----------------------  END IMPORTS ---------------------------------
 
 function Landing() {
     const navigate = useNavigate();

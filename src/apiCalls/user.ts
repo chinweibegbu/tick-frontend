@@ -1,17 +1,18 @@
 import api from "./axios";
-import { ApiGetUserResponse, SigninFormValues } from "../models";
+import { ApiCallResponse, ApiResponse, SigninFormValues, UserModel } from "../models";
+import { AxiosResponse } from "axios";
 
 export const authenticateUserApiCall = (formValues: SigninFormValues) => {
-  const AuthenticateUser = new Promise<ApiGetUserResponse>((resolve) => {
+  const AuthenticateUser = new Promise<ApiCallResponse<UserModel>>((resolve) => {
     api
       .post(
         "/User/authenticate",
         formValues
       )
-      .then((response: ApiGetUserResponse["data"]) => {
-        resolve({ data: response });
+      .then((response: AxiosResponse<ApiResponse<UserModel>>) => {
+        resolve({ data: response.data });
       })
-      .catch((err: ApiGetUserResponse["error"]) => {
+      .catch((err: ApiResponse<ApiCallResponse<UserModel>>["errors"]) => {
         resolve({ error: err });
       });
   });

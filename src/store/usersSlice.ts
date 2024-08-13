@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { authenticateUserApiCall } from "../apiCalls/user";
-import { ApiResponse, SigninFormValues, UserModel } from "../models";
+import { SigninFormValues, UserModel } from "../models";
 
 const initialState = {
   currentUser: {} as UserModel,
@@ -39,7 +39,7 @@ export const authenticateUser = createAsyncThunk
         // The `data` property of the TasksResult object is of type `AxiosResponse<ApiResponse<UserModel>>`
         // The `data` property of THAT `data` property is of type `ApiResponse<UserModel>` which was passed as a type argument
         // The `data` property of THAT `data` property is of type `UserModel` which was passed as a type argument
-        return data.data.data;
+        return data.data;
       }
 
       // --> Case #1c: API calls return object has neither `error` nor `data` property

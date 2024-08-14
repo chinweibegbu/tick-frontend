@@ -1,13 +1,23 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { addUser } from "../../store/usersSlice";
+import { AppDispatch, RootState } from "../../store/store";
 import { SignupFormSchema } from "../../schemas";
 import { SignupProps, SignupFormValues } from "../../models";
+
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
 
+// ----------------------  END IMPORTS ---------------------------------
+
 function Signup({ goToPage }: SignupProps) {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const { signUpErrorMessage } = useSelector((state: RootState) => state.usersReducer);
+    
     const {
         handleSubmit,
         register,
@@ -15,11 +25,13 @@ function Signup({ goToPage }: SignupProps) {
     } = useForm<SignupFormValues>({ resolver: yupResolver(SignupFormSchema) });
 
     const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
-        // Add user to DB
-        console.log(data);
-        
-        // Go to dashboard
-        goToPage(MouseEvent, "dashboard");
+        // Add user
+        dispatch(addUser(data))
+            .then((response) => {
+                if (response.type === "addUser/fulfilled") {
+                    goToPage(MouseEvent, "signin");
+                }
+            });
     }
 
     const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +53,10 @@ function Signup({ goToPage }: SignupProps) {
                     <p className="font-exo font-medium text-subtitle">Sign up to Tick</p>
                     <p className="font-tabular text-small mb-6">Create a free, lifetime account with Tick today!</p>
 
+                    <p className={"font-tabular text-small " + (signUpErrorMessage ? "text-red-pure" : "invisible")}>
+                        {signUpErrorMessage || "Placeholder"}
+                    </p>
+
                     <form onSubmit={handleSubmit(onSubmit)}>
 
                         <div className="flex flex-wrap justify-between">
@@ -50,7 +66,7 @@ function Signup({ goToPage }: SignupProps) {
                                 <label className="font-tabular text-inputLabel">First Name</label>
                                 <input {...register("firstName")} type="text" className="font-tabular font-medium text-inputText md:w-[25vw] lg:w-[18vw] p-1.5 border border-neutral-0 rounded-md"></input>
                                 <p className={"font-tabular text-small " + (errors.firstName ? "text-red-pure" : "invisible")}>
-                                    { errors.firstName?.message || "Placeholder" }
+                                    {errors.firstName?.message || "Placeholder"}
                                 </p>
                             </div>
 
@@ -59,7 +75,7 @@ function Signup({ goToPage }: SignupProps) {
                                 <label className="font-tabular text-inputLabel">Last Name</label>
                                 <input {...register("lastName")} type="text" className="font-tabular font-medium text-inputText md:w-[25vw] lg:w-[18vw] p-1.5 border border-neutral-0 rounded-md"></input>
                                 <p className={"font-tabular text-small " + (errors.lastName ? "text-red-pure" : "invisible")}>
-                                    { errors.lastName?.message || "Placeholder" }
+                                    {errors.lastName?.message || "Placeholder"}
                                 </p>
                             </div>
 
@@ -70,7 +86,7 @@ function Signup({ goToPage }: SignupProps) {
                             <label className="font-tabular text-inputLabel">Email</label>
                             <input {...register("email")} type="text" className="font-tabular font-medium text-inputText w-full p-1.5 border border-neutral-0 rounded-md"></input>
                             <p className={"font-tabular text-small " + (errors.email ? "text-red-pure" : "invisible")}>
-                                { errors.email?.message || "Placeholder" }
+                                {errors.email?.message || "Placeholder"}
                             </p>
                         </div>
 
@@ -82,7 +98,7 @@ function Signup({ goToPage }: SignupProps) {
                                 <i className={(showPassword ? "bi-eye-slash" : "bi-eye") + " text-neutral-0 text-icon-regular mr-2"} onClick={togglePassword} />
                             </div>
                             <p className={"font-tabular text-small " + (errors.password ? "text-red-pure" : "invisible")}>
-                                { errors.password?.message || "Placeholder" }
+                                {errors.password?.message || "Placeholder"}
                             </p>
                         </div>
 
@@ -95,7 +111,7 @@ function Signup({ goToPage }: SignupProps) {
                                 <LinkText text="Sign in" path="signin" goToPage={goToPage} />
                             </div>
                         </div>
-                        
+
                     </form>
 
                 </div>

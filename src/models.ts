@@ -104,7 +104,7 @@ export type LinkTextProps = {
 // API Calls
 export interface ApiCallResponse<T> {
     data?: ApiResponse<T>;
-    error?: AxiosError;
+    error?: AxiosError<any, any>;
 }
 
 // How Victor would approach it:

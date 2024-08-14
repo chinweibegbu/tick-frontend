@@ -1,11 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { authenticateUserApiCall } from "../apiCalls/user";
-import { SigninFormValues, UserModel } from "../models";
+import { addUserApiCall, authenticateUserApiCall } from "../apiCalls/user";
+import { SigninFormValues, SignupFormValues, UserModel } from "../models";
 
 const initialState = {
   currentUser: {} as UserModel,
   loading: false,
-  errorMessage: ""
+  errorMessage: "",
+  signUpErrorMessage: ""
 };
 
 /*
@@ -31,13 +32,12 @@ export const authenticateUser = createAsyncThunk
       // --> Case #1a: API calls return object has `error` property
       if (error) {
         // `rejectWithValue()` takes an argument that is of the type defined in the `createAsyncThunk()` type arguments
-        return thunkApi.rejectWithValue(error.message ?? "Failed to authenticate user");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to authenticate user");
       }
 
       // --> Case #1b: API calls return object has `data` property
       if (data) {
-        // The `data` property of the TasksResult object is of type `AxiosResponse<ApiResponse<UserModel>>`
-        // The `data` property of THAT `data` property is of type `ApiResponse<UserModel>` which was passed as a type argument
+        // The `data` property is of type `ApiResponse<UserModel>` which was passed as a type argument to AxiosResponse<>
         // The `data` property of THAT `data` property is of type `UserModel` which was passed as a type argument
         return data.data;
       }
@@ -47,6 +47,32 @@ export const authenticateUser = createAsyncThunk
     }
 
     // --> Case #2: API call is not successful
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
+  export const addUser = createAsyncThunk
+  <
+    string,
+    SignupFormValues,
+    { rejectValue: string }
+  >
+  ("addUser", async (values, thunkApi) => {
+    try {
+      const { data, error } = await addUserApiCall(values);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
     catch (error) {
       return thunkApi.rejectWithValue("An unexpected error occurred");
     }
@@ -88,6 +114,32 @@ const usersSlice = createSlice({
           state.loading = false;
           state.errorMessage = "Incorrect email or password";
           console.log("authenticateUser() failed");
+        }
+      )
+
+      // Add User
+      .addCase(
+        addUser.pending,
+        (state) => {
+          state.loading = true;
+          console.log("addUser() pending...");
+        }
+      )
+      .addCase(
+        addUser.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("addUser() successful!");
+        }
+      )
+      .addCase(
+        addUser.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          console.log(action.payload);
+          
+          state.signUpErrorMessage = action.payload!;
+          console.log("addUser() failed");
         }
       );
   },

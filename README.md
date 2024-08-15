@@ -134,7 +134,7 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
 ### General Features
 - [x] Landing Page
 - [x] Sign Up Page
-  - [ ] Create user
+  - [x] Create user
     - [x] userName
     - [x] firstName
     - [x] lastName

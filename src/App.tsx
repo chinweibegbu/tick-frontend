@@ -7,6 +7,8 @@ import Landing from "./pages/landing";
 import Signin from "./pages/signin";
 import Signup from "./pages/signup";
 import Dashboard from "./pages/dashboard";
+import ResetUser from './pages/resetUser';
+import ResetPassword from './pages/resetPassword';
 
 function App() {
 
@@ -26,6 +28,8 @@ function App() {
           <Route path="/signin" element={<Signin goToPage={goToPage} />} />
           <Route path="/signup" element={<Signup goToPage={goToPage} />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/resetUser" element={<ResetUser goToPage={goToPage} />} />
+          <Route path="/resetPassword" element={<ResetPassword goToPage={goToPage} />} />
         </Routes>
       </Container>
 

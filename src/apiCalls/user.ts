@@ -1,5 +1,5 @@
 import api from "./axios";
-import { ApiCallResponse, ApiResponse, SigninFormValues, SignupFormValues, UserModel } from "../models";
+import { ApiCallResponse, ApiResponse, ResetUserFormValues, ResetPasswordApiRequest, SigninFormValues, SignupFormValues, UserModel } from "../models";
 import { AxiosResponse } from "axios";
 
 export const authenticateUserApiCall = (formValues: SigninFormValues) => {
@@ -36,4 +36,38 @@ export const addUserApiCall = (formValues: SignupFormValues) => {
       });
   });
   return AddUser;
+}
+
+export const sendResetUserEmailApiCall = (formValues: ResetUserFormValues) => {
+  const SendResetUserEmail = new Promise<ApiCallResponse<string>>((resolve) => {
+    api
+      .post(
+        "/User/resetUser",
+        formValues
+      )
+      .then((response: AxiosResponse<ApiResponse<string>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<string>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return SendResetUserEmail;
+}
+
+export const resetPasswordApiCall = (requestBody: ResetPasswordApiRequest) => {
+  const ResetPassword = new Promise<ApiCallResponse<string>>((resolve) => {
+    api
+      .post(
+        "/User/passwordReset",
+        requestBody
+      )
+      .then((response: AxiosResponse<ApiResponse<string>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<string>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return ResetPassword;
 }

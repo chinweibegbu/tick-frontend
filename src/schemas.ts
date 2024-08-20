@@ -32,6 +32,29 @@ export const SigninFormSchema = yup.object().shape({
         .required("Entry is required"),
 });
 
+export const ResetUserFormSchema = yup.object().shape({
+    email: yup
+        .string()
+        .email("Entry must be a valid email address")
+        .required("Entry is required"),
+});
+
+export const ResetPasswordFormSchema = yup.object().shape({
+    password: yup
+        .string()
+        .required("Entry is required")
+        .min(8, "Entry must be at least 8 characters long")
+        .matches(/^(?=.*[a-z]).{8,}$/, "Entry must contain at least one lowercase letter")
+        .matches(/^(?=.*[A-Z]).{8,}$/, "Entry must contain at least one uppercase letter")
+        .matches(/^(?=.*[0-9]).{8,}$/, "Entry must contain at least one number")
+        .matches(/^(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$/, "Entry must contain at least one special character")
+        .matches(/^(?!.* ).{8,}$$/, "Entry must NOT contain a space"),
+    confirmPassword: yup
+        .string()
+        .required("Entry is required")
+        .oneOf([yup.ref('password')], 'Passwords must match'),
+});
+
 export const AddTaskFormSchema = yup.object().shape({
     details: yup
         .string()

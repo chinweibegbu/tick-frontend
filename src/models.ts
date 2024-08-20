@@ -22,6 +22,23 @@ export type SignupFormValues = {
     password: string
 }
 
+export type ResetUserProps = {
+    goToPage: Function
+}
+
+export type ResetUserFormValues = {
+    email: string
+}
+
+export type ResetPasswordProps = {
+    goToPage: Function
+}
+
+export type ResetPasswordFormValues = {
+    password: string
+    confirmPassword: string
+}
+
 // Dashboard Forms
 export type AddTaskFormValues = {
     details: string
@@ -102,6 +119,13 @@ export type LinkTextProps = {
 }
 
 // API Calls
+export interface ResetPasswordApiRequest {
+    email: string
+    password: string
+    confirmPassword: string
+    token: string
+}
+
 export interface ApiCallResponse<T> {
     data?: ApiResponse<T>;
     error?: AxiosError<any, any>;

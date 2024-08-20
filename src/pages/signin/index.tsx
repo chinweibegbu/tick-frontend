@@ -70,7 +70,10 @@ function Signin({ goToPage }: SigninProps) {
 
                         {/* Password */}
                         <div className="LongTextInput flex flex-col mb-1 md:mb-3">
-                            <label className="font-tabular text-inputLabel">Password</label>
+                            <div className="flex justify-between">
+                                <label className="font-tabular text-inputLabel">Password</label>
+                                <LinkText text="Forgot password?" goToPage={() => goToPage(MouseEvent, "resetUser")} />
+                            </div>
                             <div className="flex border border-neutral-0 rounded-md p-1.5 focus-within:border-2 focus-within:p-[0.3rem]">
                                 <input  {...register("password")} type={showPassword ? "text" : "password"} className="font-tabular font-medium text-inputText w-full focus:outline-none focus:border-none"></input>
                                 <i className={(showPassword ? "bi-eye-slash" : "bi-eye") + " text-neutral-0 text-icon-regular mr-2"} onClick={togglePassword} />

@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addUserApiCall, authenticateUserApiCall } from "../apiCalls/user";
-import { SigninFormValues, SignupFormValues, UserModel } from "../models";
+import { addUserApiCall, authenticateUserApiCall, resetPasswordApiCall, sendResetUserEmailApiCall } from "../apiCalls/user";
+import { SigninFormValues, SignupFormValues, ResetUserFormValues, ResetPasswordFormValues, UserModel, ResetPasswordApiRequest } from "../models";
 
 const initialState = {
   currentUser: {} as UserModel,
@@ -78,6 +78,58 @@ export const authenticateUser = createAsyncThunk
     }
   });
 
+  export const resetUser = createAsyncThunk
+  <
+    string,
+    ResetUserFormValues,
+    { rejectValue: string }
+  >
+  ("resetUser", async (values, thunkApi) => {
+    try {
+      const { data, error } = await sendResetUserEmailApiCall(values);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
+  export const resetPassword = createAsyncThunk
+  <
+    string,
+    ResetPasswordApiRequest,
+    { rejectValue: string }
+  >
+  ("resetPassword", async (values, thunkApi) => {
+    try {
+      const { data, error } = await resetPasswordApiCall(values);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
 const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -136,10 +188,55 @@ const usersSlice = createSlice({
         addUser.rejected,
         (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
-          console.log(action.payload);
-          
           state.signUpErrorMessage = action.payload!;
           console.log("addUser() failed");
+        }
+      )
+      
+      // Reset User
+      .addCase(
+        resetUser.pending,
+        (state) => {
+          state.loading = true;
+          console.log("resetUser() pending...");
+        }
+      )
+      .addCase(
+        resetUser.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("resetUser() successful!");
+        }
+      )
+      .addCase(
+        resetUser.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.signUpErrorMessage = action.payload!;
+          console.log("resetUser() failed");
+        }
+      )
+      
+      // Reset Password
+      .addCase(
+        resetPassword.pending,
+        (state) => {
+          state.loading = true;
+          console.log("resetPassword() pending...");
+        }
+      )
+      .addCase(
+        resetPassword.fulfilled,
+        (state) => {
+          state.loading = false;
+          console.log("resetPassword() successful!");
+        }
+      )
+      .addCase(
+        resetPassword.rejected,
+        (state) => {
+          state.loading = false;
+          console.log("resetPassword() failed");
         }
       );
   },

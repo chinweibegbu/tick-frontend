@@ -146,7 +146,8 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
 ### Ticker Features
 - [x] Sign In Page
   - [x] Authenticate user
-  - [ ] Forgot password
+  - [x] Send reset password email
+  - [x] Reset password
 - [ ] Dashboard
   - [x] View all user's tasks
     - [ ] Filter completed tasks
@@ -162,7 +163,7 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
 ### Admin Features
 - [x] Sign In Page
   - [x] Authenticate user
-  - [ ] Forgot password
+  - [x] Forgot password
 - [ ] Dashboard
   - [x] View all tasks
   - [ ] View all users

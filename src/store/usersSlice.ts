@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addUserApiCall, authenticateUserApiCall, resetPasswordApiCall, sendResetUserEmailApiCall } from "../apiCalls/user";
-import { SigninFormValues, SignupFormValues, ResetUserFormValues, ResetPasswordFormValues, UserModel, ResetPasswordApiRequest } from "../models";
+import { SigninFormValues, SignupFormValues, ResetUserFormValues, UserModel, ResetPasswordApiRequest } from "../models";
 
 const initialState = {
   currentUser: {} as UserModel,

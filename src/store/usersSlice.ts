@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addUserApiCall, authenticateUserApiCall, resetPasswordApiCall, sendResetUserEmailApiCall } from "../apiCalls/user";
+import { addUserApiCall, authenticateUserApiCall, resetPasswordApiCall, sendResetUserEmailApiCall, logoutApiCall } from "../apiCalls/user";
 import { SigninFormValues, SignupFormValues, ResetUserFormValues, UserModel, ResetPasswordApiRequest } from "../models";
 
 const initialState = {
@@ -52,7 +52,33 @@ export const authenticateUser = createAsyncThunk
     }
   });
 
-  export const addUser = createAsyncThunk
+export const logoutUser = createAsyncThunk
+  <
+    string,
+    { token: string },
+    { rejectValue: string }
+  >
+  ("logoutUser", async (values, thunkApi) => {
+    try {
+      const { data, error } = await logoutApiCall(values.token);
+
+      if (error) {
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+      }
+
+      if (data) {
+        return data.data;
+      }
+
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+
+    catch (error) {
+      return thunkApi.rejectWithValue("An unexpected error occurred");
+    }
+  });
+
+export const addUser = createAsyncThunk
   <
     string,
     SignupFormValues,
@@ -78,7 +104,7 @@ export const authenticateUser = createAsyncThunk
     }
   });
 
-  export const resetUser = createAsyncThunk
+export const resetUser = createAsyncThunk
   <
     string,
     ResetUserFormValues,
@@ -104,7 +130,7 @@ export const authenticateUser = createAsyncThunk
     }
   });
 
-  export const resetPassword = createAsyncThunk
+export const resetPassword = createAsyncThunk
   <
     string,
     ResetPasswordApiRequest,
@@ -133,16 +159,11 @@ export const authenticateUser = createAsyncThunk
 const usersSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {
-    logout: (state) => {
-      state.currentUser = {} as UserModel;
-      state.loading = false;
-      state.errorMessage = "";
-      localStorage.removeItem("token");
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+
+      // Authenticate user
       .addCase(
         authenticateUser.pending,
         (state) => {
@@ -169,6 +190,32 @@ const usersSlice = createSlice({
         }
       )
 
+      // Logout user
+      .addCase(
+        logoutUser.pending,
+        (state) => {
+          state.loading = true;
+          console.log("logoutUser() pending...");
+        }
+      )
+      .addCase(
+        logoutUser.fulfilled,
+        (state) => {
+          state.currentUser = {} as UserModel;
+          state.loading = false;
+          state.errorMessage = "";
+          localStorage.removeItem("token");
+          console.log("logoutUser() successful!");
+        }
+      )
+      .addCase(
+        logoutUser.rejected,
+        (state) => {
+          state.loading = false;
+          console.log("logoutUser() failed");
+        }
+      )
+
       // Add User
       .addCase(
         addUser.pending,
@@ -192,7 +239,7 @@ const usersSlice = createSlice({
           console.log("addUser() failed");
         }
       )
-      
+
       // Reset User
       .addCase(
         resetUser.pending,
@@ -216,7 +263,7 @@ const usersSlice = createSlice({
           console.log("resetUser() failed");
         }
       )
-      
+
       // Reset Password
       .addCase(
         resetPassword.pending,
@@ -242,6 +289,6 @@ const usersSlice = createSlice({
   },
 });
 
-export const { logout } = usersSlice.actions;
+export const { } = usersSlice.actions;
 
 export default usersSlice.reducer;

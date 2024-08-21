@@ -1,9 +1,30 @@
+import { useDispatch, useSelector } from "react-redux";
+
+import { AppDispatch, RootState } from "../../store/store";
 import { HeaderProps } from "../../models";
+import { logoutUser } from "../../store/usersSlice";
+
 import LinkText from "../LinkText";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function Header({ goToPage }: HeaderProps) {
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { currentUser } = useSelector((state: RootState) => state.usersReducer);
+
+    // @ts-ignore
+    const logout = (e: React.MouseEvent<HTMLElement>, path?: string): void => {
+        const token = localStorage.getItem("token");
+        dispatch(logoutUser({ token: token! }))
+            .then((response) => {
+                if (response.type === "logoutUser/fulfilled") {
+                    goToPage(e);
+                }
+            });
+
+    }
+
     return (
         <div className="Header h-14 bg-green flex justify-between items-center px-12 ">
             <div className="Logo size-10 rounded-full flex" onClick={(e) => goToPage(e)}>
@@ -12,8 +33,8 @@ function Header({ goToPage }: HeaderProps) {
             </div>
             <div className="text-neutral-100">
                 {
-                    localStorage.getItem("token")
-                        ? <LinkText text="Log out" goToPage={goToPage} />
+                    (currentUser?.id)
+                        ? <LinkText text="Log out" goToPage={logout} />
                         : null
                 }
             </div>

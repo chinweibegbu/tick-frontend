@@ -20,6 +20,28 @@ export const authenticateUserApiCall = (formValues: SigninFormValues) => {
   return AuthenticateUser;
 }
 
+export const logoutApiCall = (token: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  const LogoutUser = new Promise<ApiCallResponse<string>>((resolve) => {
+    api
+      .post(
+        "/User/logout",
+        undefined,
+        config
+      )
+      .then((response: AxiosResponse<ApiResponse<string>>) => {
+        resolve({ data: response.data });
+      })
+      .catch((err: ApiResponse<ApiCallResponse<string>>["errors"]) => {
+        resolve({ error: err });
+      });
+  });
+  return LogoutUser;
+}
+
 export const addUserApiCall = (formValues: SignupFormValues) => {
   const addUserRequest = {...formValues, userName: formValues.email, role: 2};
   const AddUser = new Promise<ApiCallResponse<string>>((resolve) => {

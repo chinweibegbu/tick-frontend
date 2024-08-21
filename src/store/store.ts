@@ -9,6 +9,7 @@ export const store = configureStore({
     tasksReducer: tasksReducer,
     modalsReducer: modalsReducer,
   },
+  devTools: true
 });
 
 export type RootState = ReturnType<typeof store.getState>;

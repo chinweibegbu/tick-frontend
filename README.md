@@ -142,6 +142,10 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
     - [ ] confirmPassword
     - [x] email
     - [ ] profilePhoto
+- [ ] Toast notifications
+  - [ ] Loading state
+  - [ ] Success state
+  - [ ] Failure state
 
 ### Ticker Features
 - [x] Sign In Page
@@ -158,7 +162,7 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
   - [x] Mark task as completed (or not)
   - [x] Delete task
   - [ ] Re-order tasks
-  - [ ] Logout user
+  - [x] Logout user
 
 ### Admin Features
 - [x] Sign In Page

@@ -215,7 +215,7 @@ Project Link: [https://github.com/chinweibegbu/tick-frontend/](https://github.co
 [issues-url]: https://github.com/chinweibegbu/tick-frontend/issues
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/chinwe-ibegbu
-[product-screenshot]: public/v1-screenshot.png
+[product-screenshot]: public/v2-screenshot.png
 
 [HTML]: https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white
 [HTML-url]: https://developer.mozilla.org/en-US/docs/Web/HTML

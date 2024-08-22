@@ -2,7 +2,7 @@
 ### Overview
 <!--- Provide a general summary of your changes -->
 
-Fixes # <!-- issue number -->
+*Issue(s) Referenced: # <!-- issue number -->*
 
 ### Type of Change
 - [ ] Bug fix (non-breaking change which fixes an issue)

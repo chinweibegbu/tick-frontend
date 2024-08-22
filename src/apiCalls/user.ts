@@ -43,12 +43,22 @@ export const logoutApiCall = (token: string) => {
 }
 
 export const addUserApiCall = (formValues: SignupFormValues) => {
-  const addUserRequest = {...formValues, userName: formValues.email, role: 2};
+  // Create request body as form data 
+  const formData = new FormData();
+  formData.append("firstName", formValues.firstName);
+  formData.append("lastName", formValues.lastName);
+  formData.append("email", formValues.email);
+  formData.append("userName", formValues.email);
+  formData.append("password", formValues.password);
+  formData.append("role", "2");
+  formData.append("profileImage", formValues.profileImage);
+
+  // Create API call function
   const AddUser = new Promise<ApiCallResponse<string>>((resolve) => {
     api
       .post(
         "/User/addUser",
-        addUserRequest
+        formData
       )
       .then((response: AxiosResponse<ApiResponse<string>>) => {
         resolve({ data: response.data });

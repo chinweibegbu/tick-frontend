@@ -40,16 +40,23 @@ function Dashboard() {
                         handleClick={() => dispatch(toggleModal({ modalName: "addTaskModal", showModal: true }))}
                     />
                 </div>
-                <div className="last:mb-4">
-                    {
+
+                {
+                    (tasks.length > 0) ?
                         // tasks?.map(...) --> Map tasks only when tasks is not `undefined`
-                        tasks?.map((task, key) => {
-                            return <Task
+                        <div className="last:mb-4">
+                            {tasks.map((task, key) => {
+                                return <Task
                                 key={key}
                                 {...task} />
-                        })
-                    }
-                </div>
+                            })}
+                        </div> :
+                        <div className="flex flex-col justify-center items-center min-h-[calc(100%-100px)]">
+                            <img className="h-[20vh] mr-4" src="no-data.png" alt="Black person with an afro sitting"/>
+                            <p className="font-tabular text-small mb-5">No Tasks Yet</p>
+                        </div>
+                }
+
             </div>
             {
                 showAddTaskModal && <AddTaskModal />

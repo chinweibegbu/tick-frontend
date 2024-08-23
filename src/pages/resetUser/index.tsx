@@ -8,13 +8,14 @@ import { ResetUserFormSchema } from "../../schemas";
 import { ResetUserProps, ResetUserFormValues } from "../../models";
 
 import Button from "../../components/Button";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function ResetUser({ goToPage }: ResetUserProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -63,7 +64,11 @@ function ResetUser({ goToPage }: ResetUserProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Reset password" />
+                            {
+                                loading
+                                ? <ButtonWithLoader text="Sending email" />
+                                : <Button text="Send email" />
+                            }
                         </div>
                     </form>
 

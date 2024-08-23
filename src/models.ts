@@ -112,6 +112,11 @@ export type ButtonWithIconsProps = {
     handleClick?: MouseEventHandler
 }
 
+export type ButtonWithLoaderProps = {
+    text: string
+    isDelete?: boolean
+}
+
 export type LinkTextProps = {
     text: string
     path?: string

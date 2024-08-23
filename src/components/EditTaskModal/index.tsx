@@ -10,13 +10,14 @@ import { EditTaskFormSchema } from "../../schemas";
 import { EditTaskFormValues } from "../../models";
 
 import Button from "../Button";
+import ButtonWithLoader from "../ButtonWithLoader";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function EditTaskModal() {
 
   const dispatch = useDispatch<AppDispatch>();
-  const { currentTask } = useSelector((state: RootState) => state.tasksReducer);
+  const { currentTask, loading } = useSelector((state: RootState) => state.tasksReducer);
   const { taskIdToEdit } = useSelector((state: RootState) => state.modalsReducer);
 
   const [details, setDetails] = useState(currentTask.details);
@@ -95,7 +96,11 @@ function EditTaskModal() {
 
         {/* "Edit Task" button */}
         <div className="w-full text-center pt-4">
-          <Button text="Edit Task" />
+          {
+            loading 
+            ? <ButtonWithLoader text="Editing Task"/>
+            : <Button text="Edit Task" />
+          }
         </div>
 
       </form>

@@ -5,6 +5,7 @@ import { deleteTask, fetchTasksByUserId } from "../../store/tasksSlice";
 import { AppDispatch, RootState } from "../../store/store";
 
 import Button from "../Button";
+import ButtonWithLoader from "../ButtonWithLoader";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -12,6 +13,8 @@ function DeleteTaskConfirmModal() {
 
   const dispatch = useDispatch<AppDispatch>();
   const { taskIdToDelete } = useSelector((state: RootState) => state.modalsReducer);
+  const { loading } = useSelector((state: RootState) => state.tasksReducer);
+
 
   return (
 
@@ -28,20 +31,25 @@ function DeleteTaskConfirmModal() {
 
         {/* "Delete Task" button */}
         <div className="w-full pt-4">
-          <Button isDelete={true} text="Yes" handleClick={() => {
-            // Edit task in DB
-            const token = localStorage.getItem("token");
-            dispatch(deleteTask({ token: token!, taskId: taskIdToDelete }))
-              .then((response) => {
-                if (response.type === "deleteTask/fulfilled") {
-                  // Reload tasks
-                  dispatch(fetchTasksByUserId({ token: token! }));
+          {
+            loading
+              ? <ButtonWithLoader isDelete={true} text="Deleting Task" />
+              : <Button isDelete={true} text="Yes" handleClick={() => {
+                // Edit task in DB
+                const token = localStorage.getItem("token");
+                dispatch(deleteTask({ token: token!, taskId: taskIdToDelete }))
+                  .then((response) => {
+                    if (response.type === "deleteTask/fulfilled") {
+                      // Reload tasks
+                      dispatch(fetchTasksByUserId({ token: token! }));
 
-                  // Close Edit Task modal
-                  dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: false }));
-                }
-              });
-          }} />
+                      // Close Edit Task modal
+                      dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: false }));
+                    }
+                  });
+              }} />
+          }
+
         </div>
       </div>
 

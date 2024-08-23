@@ -1,20 +1,22 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { toggleModal } from "../../store/modalsSlice";
 import { addTask, fetchTasksByUserId } from "../../store/tasksSlice";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { AddTaskFormSchema } from "../../schemas";
 import { AddTaskFormValues } from "../../models";
 
 import Button from "../Button";
+import ButtonWithLoader from "../ButtonWithLoader";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function AddTaskModal() {
 
   const dispatch = useDispatch<AppDispatch>();
+  const { loading } = useSelector((state: RootState) => state.tasksReducer);
 
   const {
     handleSubmit,
@@ -71,7 +73,12 @@ function AddTaskModal() {
 
         {/* "Add Task" button */}
         <div className="w-full text-center pt-4">
-          <Button text="Add Task" />
+          {
+            (loading)
+            ? <ButtonWithLoader text="Adding Task"/>
+            : <Button text="Add Task" />
+          }
+          
         </div>
 
       </form>

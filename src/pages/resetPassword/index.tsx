@@ -10,6 +10,7 @@ import { ResetPasswordFormSchema } from "../../schemas";
 import { ResetPasswordProps, ResetPasswordFormValues } from "../../models";
 
 import Button from "../../components/Button";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -17,7 +18,7 @@ function ResetPassword({ goToPage }: ResetPasswordProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [searchParams, _] = useSearchParams();
 
-    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -98,7 +99,11 @@ function ResetPassword({ goToPage }: ResetPasswordProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Submit" />
+                            {
+                                loading
+                                    ? <ButtonWithLoader text="Resetting password" />
+                                    : <Button text="Reset password" />
+                            }
                         </div>
                     </form>
 

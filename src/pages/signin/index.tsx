@@ -9,6 +9,7 @@ import { SigninFormSchema } from "../../schemas";
 import { SigninProps, SigninFormValues } from "../../models";
 
 import Button from "../../components/Button";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
 import LinkText from "../../components/LinkText";
 
 // ----------------------  END IMPORTS ---------------------------------
@@ -16,7 +17,7 @@ import LinkText from "../../components/LinkText";
 function Signin({ goToPage }: SigninProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -85,7 +86,11 @@ function Signin({ goToPage }: SigninProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Log in" />
+                            {
+                                loading
+                                ? <ButtonWithLoader text="Logging in"/>
+                                : <Button text="Log in" />
+                            }
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Don't have an account yet?</p>
                                 &nbsp;

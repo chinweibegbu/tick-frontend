@@ -10,13 +10,14 @@ import { SignupProps, SignupFormValues } from "../../models";
 
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function Signup({ goToPage }: SignupProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { signUpErrorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { loading, signUpErrorMessage } = useSelector((state: RootState) => state.usersReducer);
     
     const {
         handleSubmit,
@@ -104,7 +105,12 @@ function Signup({ goToPage }: SignupProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Create account" />
+                            {
+                                loading
+                                ? <ButtonWithLoader text="Creating account" />
+                                : <Button text="Create account" />
+                            }
+                            
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Already have an account?</p>
                                 &nbsp;

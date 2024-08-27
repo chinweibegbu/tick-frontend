@@ -1,17 +1,19 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../store/store";
 import { HeaderProps } from "../../models";
-import { logoutUser } from "../../store/usersSlice";
+import { logoutUser, resetState } from "../../store/usersSlice";
 
 import LinkText from "../LinkText";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function Header({ goToPage }: HeaderProps) {
 
     const dispatch = useDispatch<AppDispatch>();
-    const { currentUser } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
 
     // @ts-ignore
     const logout = (e: React.MouseEvent<HTMLElement>, path?: string): void => {
@@ -22,8 +24,16 @@ function Header({ goToPage }: HeaderProps) {
                     goToPage(e);
                 }
             });
-
     }
+
+    useEffect(() => {
+        if (errorMessage) {
+            notifyError(errorMessage);
+            dispatch(resetState());
+        }
+    }, [errorMessage]);
+
+    const token = localStorage.getItem("token");
 
     return (
         <div className="Header h-14 bg-green flex justify-between items-center px-12 ">
@@ -33,7 +43,7 @@ function Header({ goToPage }: HeaderProps) {
             </div>
             <div className="text-neutral-100">
                 {
-                    (currentUser?.id)
+                    (token)
                         ? <LinkText text="Log out" goToPage={logout} />
                         : null
                 }

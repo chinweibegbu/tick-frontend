@@ -9,6 +9,7 @@ import Signup from "./pages/signup";
 import Dashboard from "./pages/dashboard";
 import ResetUser from './pages/resetUser';
 import ResetPassword from './pages/resetPassword';
+import { NotifyContainer } from './utils/notifications';
 
 function App() {
 
@@ -20,6 +21,8 @@ function App() {
 
   return (
     <div className='App min-h-screen'>
+
+      <NotifyContainer />
       <Header goToPage={goToPage} />
 
       <Container>

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { authenticateUser } from "../../store/usersSlice";
+import { authenticateUser, resetState } from "../../store/usersSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { SigninFormSchema } from "../../schemas";
 import { SigninProps, SigninFormValues } from "../../models";
@@ -11,6 +11,7 @@ import { SigninProps, SigninFormValues } from "../../models";
 import Button from "../../components/Button";
 import ButtonWithLoader from "../../components/ButtonWithLoader";
 import LinkText from "../../components/LinkText";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -22,6 +23,7 @@ function Signin({ goToPage }: SigninProps) {
     const {
         handleSubmit,
         register,
+        setValue,
         formState: { errors },
     } = useForm<SigninFormValues>({ resolver: yupResolver(SigninFormSchema) });
 
@@ -40,6 +42,14 @@ function Signin({ goToPage }: SigninProps) {
         setShowPassword(!showPassword)
     }
 
+    useEffect(() => {
+        if (errorMessage !== "") {
+            notifyError(errorMessage);
+            setValue("password", "");
+            dispatch(resetState());
+        }
+    }, [errorMessage]);
+
     return (
         <div className="Signin h-full flex flex-col md:flex-row">
 
@@ -53,10 +63,6 @@ function Signin({ goToPage }: SigninProps) {
 
                     <p className="font-exo font-medium text-subtitle">Sign in to Tick</p>
                     <p className="font-tabular text-small mb-6">Manage your tasks with ease and efficiency!</p>
-
-                    <p className={"font-tabular text-small " + (errorMessage ? "text-red-pure" : "invisible")}>
-                        {errorMessage || "Placeholder"}
-                    </p>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
 

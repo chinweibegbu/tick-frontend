@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { addUser } from "../../store/usersSlice";
+import { addUser, resetState } from "../../store/usersSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { SignupFormSchema } from "../../schemas";
 import { SignupProps, SignupFormValues } from "../../models";
@@ -11,13 +11,14 @@ import { SignupProps, SignupFormValues } from "../../models";
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
 import ButtonWithLoader from "../../components/ButtonWithLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function Signup({ goToPage }: SignupProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { loading, signUpErrorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
     
     const {
         handleSubmit,
@@ -34,6 +35,13 @@ function Signup({ goToPage }: SignupProps) {
                 }
             });
     }
+
+    useEffect(() => {
+        if (errorMessage) {
+            notifyError(errorMessage);
+            dispatch(resetState());
+        }
+    }, [errorMessage]);
 
     const [showPassword, setShowPassword] = useState(false);
     const togglePassword = () => {
@@ -53,10 +61,6 @@ function Signup({ goToPage }: SignupProps) {
 
                     <p className="font-exo font-medium text-subtitle">Sign up to Tick</p>
                     <p className="font-tabular text-small mb-6">Create a free, lifetime account with Tick today!</p>
-
-                    <p className={"font-tabular text-small " + (signUpErrorMessage ? "text-red-pure" : "invisible")}>
-                        {signUpErrorMessage || "Placeholder"}
-                    </p>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
 

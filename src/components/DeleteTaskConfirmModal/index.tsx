@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "../../store/store";
 
 import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -14,7 +15,6 @@ function DeleteTaskConfirmModal() {
   const dispatch = useDispatch<AppDispatch>();
   const { taskIdToDelete } = useSelector((state: RootState) => state.modalsReducer);
   const { loading } = useSelector((state: RootState) => state.tasksReducer);
-
 
   return (
 
@@ -45,6 +45,11 @@ function DeleteTaskConfirmModal() {
 
                       // Close Edit Task modal
                       dispatch(toggleModal({ modalName: "deleteTaskConfirmModal", showModal: false }));
+                    }
+
+                    if (response.type === "deleteTask/rejected") {
+                      // Toggle toast
+                      notifyError("Error while deleting task");
                     }
                   });
               }} />

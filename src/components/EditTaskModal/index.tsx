@@ -11,6 +11,7 @@ import { EditTaskFormValues } from "../../models";
 
 import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -46,6 +47,11 @@ function EditTaskModal() {
 
           // Close Edit Task modal
           dispatch(toggleModal({ modalName: "editTaskModal", showModal: false }));
+        }
+
+        if (response.type === "editTask/rejected") {
+          // Toggle toast
+          notifyError("Error while editing task");
         }
       });
   }

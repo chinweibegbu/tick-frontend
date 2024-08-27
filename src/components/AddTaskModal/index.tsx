@@ -10,6 +10,7 @@ import { AddTaskFormValues } from "../../models";
 
 import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -36,6 +37,11 @@ function AddTaskModal() {
 
           // Close Add Task modal
           dispatch(toggleModal({ modalName: "addTaskModal", showModal: false }));
+        }
+
+        if (response.type === "addTask/rejected") {
+          // Toggle toast
+          notifyError("Error while adding task");
         }
       });
   }

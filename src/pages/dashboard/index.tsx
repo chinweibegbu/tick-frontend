@@ -10,20 +10,27 @@ import Task from "../../components/Task";
 import AddTaskModal from "../../components/AddTaskModal";
 import EditTaskModal from "../../components/EditTaskModal";
 import DeleteTaskConfirmModal from "../../components/DeleteTaskConfirmModal";
+import SpinningLoader from "../../components/SpinningLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function Dashboard() {
-    const dispatch = useDispatch<AppDispatch>();
 
-    // Load user's tasks
-    const { tasks } = useSelector((state: RootState) => state.tasksReducer);
+    const dispatch = useDispatch<AppDispatch>();
+    const { tasks, loading } = useSelector((state: RootState) => state.tasksReducer);
     const { showAddTaskModal, showEditTaskModal, showDeleteTaskConfirmModal } = useSelector((state: RootState) => state.modalsReducer);
 
     useEffect(() => {
         // Fetch tasks by userId
         const token = localStorage.getItem("token");
-        dispatch(fetchTasksByUserId({ token: token! }));
+        dispatch(fetchTasksByUserId({ token: token! }))
+            .then((response) => {
+                if (response.type === "fetchTasksByUserId/rejected") {
+                    // Toggle toast
+                    notifyError("Error while loading user's tasks");
+                  }
+            });
     }, []);
 
     return (
@@ -42,19 +49,22 @@ function Dashboard() {
                 </div>
 
                 {
-                    (tasks.length > 0) ?
-                        // tasks?.map(...) --> Map tasks only when tasks is not `undefined`
-                        <div className="last:mb-4">
-                            {tasks.map((task, key) => {
-                                return <Task
-                                key={key}
-                                {...task} />
-                            })}
-                        </div> :
-                        <div className="flex flex-col justify-center items-center min-h-[calc(100%-100px)]">
-                            <img className="h-[20vh] mr-4" src="no-data.png" alt="Black person with an afro sitting"/>
-                            <p className="font-tabular text-small mb-5">No Tasks Yet</p>
+                    (loading)
+                        ? <div className="w-full flex justify-center py-10">
+                            <SpinningLoader />
                         </div>
+                        : (tasks.length > 0)
+                            ? <div className="last:mb-4">
+                                {tasks.map((task, key) => {
+                                    return <Task
+                                        key={key}
+                                        {...task} />
+                                })}
+                            </div>
+                            : <div className="flex flex-col justify-center items-center min-h-[calc(100%-100px)]">
+                                <img className="h-[20vh] mr-4" src="no-data.png" alt="Black person with an afro sitting" />
+                                <p className="font-tabular text-small mb-5">No Tasks Yet</p>
+                            </div>
                 }
 
             </div>

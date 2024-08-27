@@ -18,7 +18,7 @@ function Landing() {
                 Your efficient and streamlined task management system
             </p>
 
-            <div className="mt-10 md:w-[40%] lg:w-[25%] flex flex-col md:flex-row md:justify-between">
+            <div className="mt-10 md:w-[40%] lg:w-[25%] *:mb-2 flex flex-col md:flex-row md:justify-between">
                 <Button text="Sign Up" handleClick={() => handleClick("signup")} />
                 <Button text="Sign In" handleClick={() => handleClick("signin")} />
             </div>

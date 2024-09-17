@@ -45,13 +45,14 @@ export const logoutApiCall = (token: string) => {
 export const addUserApiCall = (formValues: SignupFormValues) => {
   // Create request body as form data 
   const formData = new FormData();
-  formData.append("firstName", formValues.firstName);
-  formData.append("lastName", formValues.lastName);
-  formData.append("email", formValues.email);
+  const properties: (keyof SignupFormValues)[] = ["firstName", "lastName", "email", "password", "profileImage"];
+  for (const property of properties) {
+    formData.append(property, formValues[property]);
+  }
+
+  // Add properties not provided by the SignUp form
   formData.append("userName", formValues.email);
-  formData.append("password", formValues.password);
   formData.append("role", "2");
-  formData.append("profileImage", formValues.profileImage);
 
   // Create API call function
   const AddUser = new Promise<ApiCallResponse<string>>((resolve) => {

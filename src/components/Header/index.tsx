@@ -70,7 +70,7 @@ function Header({ goToPage }: HeaderProps) {
                                     </div>
                                 )
                             }
-                            <img className="size-[30px] rounded-full" src={currentUser.profileImageUrl} alt={currentUser.firstName} />
+                            <img className="size-[30px] rounded-full" src={currentUser.profileImageUrl ? currentUser.profileImageUrl : "profile-photo-placeholder.png"} alt={currentUser.firstName} />
                         </div>
                         : null
                 }

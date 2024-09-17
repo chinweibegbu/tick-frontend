@@ -31,6 +31,8 @@ function ResetUser({ goToPage }: ResetUserProps) {
             .then((response) => {
                 if (response.type === "resetUser/fulfilled") {
                     // goToPage(MouseEvent, "dashboard");
+
+                    // Toggle success toast
                     notifySuccess("Email sent successfully");
                 }
             });

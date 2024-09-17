@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,7 +19,7 @@ function Signup({ goToPage }: SignupProps) {
     const dispatch = useDispatch<AppDispatch>();
 
     const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
-    
+
     const {
         handleSubmit,
         register,
@@ -33,15 +33,13 @@ function Signup({ goToPage }: SignupProps) {
                 if (response.type === "addUser/fulfilled") {
                     goToPage(MouseEvent, "signin");
                 }
+                if ((response.type === "addUser/rejected") && errorMessage) {
+                    // Toggle error toast
+                    notifyError(errorMessage);
+                    dispatch(resetState());
+                }
             });
     }
-
-    useEffect(() => {
-        if (errorMessage) {
-            notifyError(errorMessage);
-            dispatch(resetState());
-        }
-    }, [errorMessage]);
 
     const [showPassword, setShowPassword] = useState(false);
     const togglePassword = () => {
@@ -111,10 +109,10 @@ function Signup({ goToPage }: SignupProps) {
                         <div className="w-full text-center pt-6">
                             {
                                 loading
-                                ? <ButtonWithLoader text="Creating account" />
-                                : <Button text="Create account" />
+                                    ? <ButtonWithLoader text="Creating account" />
+                                    : <Button text="Create account" />
                             }
-                            
+
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Already have an account?</p>
                                 &nbsp;

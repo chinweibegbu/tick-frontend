@@ -40,7 +40,7 @@ function AddTaskModal() {
         }
 
         if (response.type === "addTask/rejected") {
-          // Toggle toast
+          // Toggle error toast
           notifyError("Error while adding task");
         }
       });

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -34,6 +34,12 @@ function Signin({ goToPage }: SigninProps) {
                 if (response.type === "authenticateUser/fulfilled") {
                     goToPage(MouseEvent, "dashboard");
                 }
+                if ((response.type === "addUser/rejected")) {
+                    // Toggle error toast
+                    notifyError(errorMessage);
+                    setValue("password", "");
+                    dispatch(resetState());
+                }
             });
     }
 
@@ -41,14 +47,6 @@ function Signin({ goToPage }: SigninProps) {
     const togglePassword = () => {
         setShowPassword(!showPassword)
     }
-
-    useEffect(() => {
-        if (errorMessage !== "") {
-            notifyError(errorMessage);
-            setValue("password", "");
-            dispatch(resetState());
-        }
-    }, [errorMessage]);
 
     return (
         <div className="Signin h-full flex flex-col md:flex-row">
@@ -94,8 +92,8 @@ function Signin({ goToPage }: SigninProps) {
                         <div className="w-full text-center pt-6">
                             {
                                 loading
-                                ? <ButtonWithLoader text="Logging in"/>
-                                : <Button text="Log in" />
+                                    ? <ButtonWithLoader text="Logging in" />
+                                    : <Button text="Log in" />
                             }
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Don't have an account yet?</p>

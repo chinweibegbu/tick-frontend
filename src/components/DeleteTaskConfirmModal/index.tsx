@@ -48,7 +48,7 @@ function DeleteTaskConfirmModal() {
                     }
 
                     if (response.type === "deleteTask/rejected") {
-                      // Toggle toast
+                      // Toggle error toast
                       notifyError("Error while deleting task");
                     }
                   });

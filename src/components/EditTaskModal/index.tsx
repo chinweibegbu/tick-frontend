@@ -50,7 +50,7 @@ function EditTaskModal() {
         }
 
         if (response.type === "editTask/rejected") {
-          // Toggle toast
+          // Toggle error toast
           notifyError("Error while editing task");
         }
       });

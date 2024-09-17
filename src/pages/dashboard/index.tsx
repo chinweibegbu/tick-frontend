@@ -27,7 +27,7 @@ function Dashboard() {
         dispatch(fetchTasksByUserId({ token: token! }))
             .then((response) => {
                 if (response.type === "fetchTasksByUserId/rejected") {
-                    // Toggle toast
+                    // Toggle error toast
                     notifyError("Error while loading user's tasks");
                   }
             });

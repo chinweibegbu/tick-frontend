@@ -50,7 +50,7 @@ function Task({ id, details, isImportant, isCompleted }: TaskProps) {
                     isDropdownVisible &&
                     (
                         <div
-                            className="absolute ruonded-md bg-neutral-100 border border-neutral-70 rounded-md"
+                            className="absolute bg-neutral-100 border border-neutral-70 rounded-md"
                             role="menu"
                             aria-orientation="vertical"
                             aria-labelledby="taskOptionsButton"

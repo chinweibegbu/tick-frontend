@@ -1,5 +1,13 @@
 import * as yup from "yup";
 
+// const validFileExtensions: { [key: string]: string[] } = {
+//     image: ['jpg', 'gif', 'png', 'jpeg', 'svg', 'webp']
+// };
+
+// function isValidFileType(fileName: string, fileType: keyof typeof validFileExtensions): boolean {
+//     return validFileExtensions[fileType].indexOf(fileName.split('.').pop()!) > -1;
+// }
+
 export const SignupFormSchema = yup.object().shape({
     firstName: yup
         .string()
@@ -20,6 +28,16 @@ export const SignupFormSchema = yup.object().shape({
         .matches(/^(?=.*[0-9]).{8,}$/, "Entry must contain at least one number")
         .matches(/^(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$/, "Entry must contain at least one special character")
         .matches(/^(?!.* ).{8,}$$/, "Entry must NOT contain a space"),
+    confirmPassword: yup
+        .string()
+        .required("Entry is required")
+        .oneOf([yup.ref('password')], 'Passwords must match'),
+    profileImage: yup
+        .mixed<File>()
+        .required("File upload is required")
+        // .test("is-valid-type", "Not a valid image type", (file) => {
+        //     return isValidFileType(file!.name.toLowerCase(), "image")
+        // })
 });
 
 export const SigninFormSchema = yup.object().shape({

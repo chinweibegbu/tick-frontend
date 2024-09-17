@@ -20,6 +20,8 @@ export type SignupFormValues = {
     lastName: string
     email: string
     password: string
+    confirmPassword: string
+    profileImage: File
 }
 
 export type ResetUserProps = {
@@ -89,8 +91,8 @@ export type UserModel = {
     lastLoginTime: string
     lastName: string
     username: string
+    profileImageUrl: string
 }
-
 
 export type HeaderProps = {
     goToPage: MouseEventHandler

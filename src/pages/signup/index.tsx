@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,15 +14,38 @@ import LinkText from "../../components/LinkText";
 // ----------------------  END IMPORTS ---------------------------------
 
 function Signup({ goToPage }: SignupProps) {
+    const [ fileName, setFileName ] = useState("");
     const dispatch = useDispatch<AppDispatch>();
 
     const { signUpErrorMessage } = useSelector((state: RootState) => state.usersReducer);
-    
+
     const {
         handleSubmit,
         register,
         formState: { errors },
+        setValue,
+        getValues
     } = useForm<SignupFormValues>({ resolver: yupResolver(SignupFormSchema) });
+
+    const fileInputField = useRef<any>(null);
+
+    const handleImageUploadClick = () => {
+        // Trigger the onClick action for the <input type=file /> element
+        fileInputField.current?.click();
+    };
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {        
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const reader = new FileReader();
+            reader.readAsDataURL(files[0]);
+            reader.onload = () => {
+                setValue("profileImage", files[0]);
+                setFileName(files[0].name);
+                console.log(getValues(), " >>> form values");
+            };
+        }
+    };
 
     const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
         // Add user
@@ -35,9 +58,9 @@ function Signup({ goToPage }: SignupProps) {
     }
 
     const [showPassword, setShowPassword] = useState(false);
-    const togglePassword = () => {
-        setShowPassword(!showPassword)
-    }
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const togglePassword = () => setShowPassword(!showPassword);
+    const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
     return (
         <div className="Signup h-full flex flex-col md:flex-row">
@@ -99,6 +122,45 @@ function Signup({ goToPage }: SignupProps) {
                             </div>
                             <p className={"font-tabular text-small " + (errors.password ? "text-red-pure" : "invisible")}>
                                 {errors.password?.message || "Placeholder"}
+                            </p>
+                        </div>
+
+                        {/* Confirm Password */}
+                        <div className="LongTextInput flex flex-col mb-1 md:mb-3">
+                            <label className="font-tabular text-inputLabel">Confirm Password</label>
+                            <div className="flex border border-neutral-0 rounded-md p-1.5 focus-within:border-2 focus-within:p-[0.3rem]">
+                                <input  {...register("confirmPassword")} type={showConfirmPassword ? "text" : "password"} className="font-tabular font-medium text-inputText w-full focus:outline-none focus:border-none"></input>
+                                <i className={(showConfirmPassword ? "bi-eye-slash" : "bi-eye") + " text-neutral-0 text-icon-regular mr-2"} onClick={toggleConfirmPassword} />
+                            </div>
+                            <p className={"font-tabular text-small " + (errors.confirmPassword ? "text-red-pure" : "invisible")}>
+                                {errors.confirmPassword?.message || "Placeholder"}
+                            </p>
+                        </div>
+
+                        {/* Profile Image Upload */}
+                        <div className="LongTextInput flex flex-col mb-1 md:mb-3">
+                            <label className="font-tabular text-inputLabel" htmlFor="profileImage">Upload Profile Photo</label>
+                            <div className="text-1xl">
+                                <div
+                                    className="border border-neutral-0 border-dotted rounded-md flex flex-col items-center py-4 hover:cursor-pointer"
+                                    onClick={handleImageUploadClick}>
+                                    <i className="bi-upload text-neutral-0 text-icon-regular mr-2" />
+                                    <p className="font-tabular">Drag and Drop file here or <span className="underline">Choose file</span></p>
+                                </div>
+                                
+                                <p className="font-tabular text-neutral-400">{fileName ? fileName : "No file chosen"}</p>
+
+                                <input
+                                    {...register("profileImage")}
+                                    ref={fileInputField}
+                                    type="file"
+                                    accept=".jpg, .png, .jpeg, .gif, svg, webp, "
+                                    onChange={handleFileChange}
+                                    className="hidden"
+                                />
+                            </div>
+                            <p className={"font-tabular text-small " + (errors.profileImage ? "text-red-pure" : "invisible")}>
+                                {errors.profileImage?.message || "Placeholder"}
                             </p>
                         </div>
 

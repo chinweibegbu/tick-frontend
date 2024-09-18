@@ -58,7 +58,7 @@
 
 ### Overview
 
-[![Tick V1 Screenshot][product-screenshot]](https://chinwe-ibegbu-portfolio.onrender.com/)
+[![Tick V2 Screenshot][product-screenshot]](https://chinwe-ibegbu-portfolio.onrender.com/)
 
 #### Idea
 Tick is an efficient and streamlined task management system with a minimalist UI/UX built using industry-standard tools. 
@@ -139,13 +139,14 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
     - [x] firstName
     - [x] lastName
     - [x] password
-    - [ ] confirmPassword
+    - [x] confirmPassword
     - [x] email
-    - [ ] profilePhoto
-- [ ] Toast notifications
-  - [ ] Loading state
-  - [ ] Success state
-  - [ ] Failure state
+    - [x] profilePhoto
+- [x] Loading state indicators
+  - [ ] Loading React component top bar
+  - [x] Loading state spinning animations
+  - [x] Success state toast notifications 
+  - [x] Failure state toast notifications
 
 ### Ticker Features
 - [x] Sign In Page
@@ -174,7 +175,7 @@ Alternatively, you can open an [Issue](https://github.com/chinweibegbu/tick-fron
   - [x] Edit user
   - [ ] Delete user
   - [ ] Disable user
-  - [ ] Logout user
+  - [x] Logout user
 
 See the [open issues](https://github.com/chinweibegbu/tick-frontend/issues) for a full list of proposed features (and known issues).
 

@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { addUser } from "../../store/usersSlice";
+import { addUser, resetState } from "../../store/usersSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { SignupFormSchema } from "../../schemas";
 import { SignupProps, SignupFormValues } from "../../models";
 
 import Button from "../../components/Button";
 import LinkText from "../../components/LinkText";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -17,7 +19,7 @@ function Signup({ goToPage }: SignupProps) {
     const [ fileName, setFileName ] = useState("");
     const dispatch = useDispatch<AppDispatch>();
 
-    const { signUpErrorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -54,6 +56,11 @@ function Signup({ goToPage }: SignupProps) {
                 if (response.type === "addUser/fulfilled") {
                     goToPage(MouseEvent, "signin");
                 }
+                if ((response.type === "addUser/rejected") && errorMessage) {
+                    // Toggle error toast
+                    notifyError(errorMessage);
+                    dispatch(resetState());
+                }
             });
     }
 
@@ -75,10 +82,6 @@ function Signup({ goToPage }: SignupProps) {
 
                     <p className="font-exo font-medium text-subtitle">Sign up to Tick</p>
                     <p className="font-tabular text-small mb-6">Create a free, lifetime account with Tick today!</p>
-
-                    <p className={"font-tabular text-small " + (signUpErrorMessage ? "text-red-pure" : "invisible")}>
-                        {signUpErrorMessage || "Placeholder"}
-                    </p>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -166,7 +169,12 @@ function Signup({ goToPage }: SignupProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Create account" />
+                            {
+                                loading
+                                    ? <ButtonWithLoader text="Creating account" />
+                                    : <Button text="Create account" />
+                            }
+
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Already have an account?</p>
                                 &nbsp;

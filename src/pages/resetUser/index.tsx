@@ -1,20 +1,23 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { resetUser } from "../../store/usersSlice";
+import { resetUser, resetState } from "../../store/usersSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { ResetUserFormSchema } from "../../schemas";
 import { ResetUserProps, ResetUserFormValues } from "../../models";
 
 import Button from "../../components/Button";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
+import { notifySuccess, notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function ResetUser({ goToPage }: ResetUserProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -26,11 +29,21 @@ function ResetUser({ goToPage }: ResetUserProps) {
         // Send resetUser email
         dispatch(resetUser(data))
             .then((response) => {
-                if (response.type === "rset/fulfilled") {
-                    goToPage(MouseEvent, "dashboard");
+                if (response.type === "resetUser/fulfilled") {
+                    // goToPage(MouseEvent, "dashboard");
+
+                    // Toggle success toast
+                    notifySuccess("Email sent successfully");
                 }
             });
     }
+
+    useEffect(() => {
+        if (errorMessage) {
+            notifyError(errorMessage);
+            dispatch(resetState());
+        }
+    }, [errorMessage]);
 
     return (
         <div className="ResetUser h-full flex flex-col md:flex-row">
@@ -46,10 +59,6 @@ function ResetUser({ goToPage }: ResetUserProps) {
                     <p className="font-exo font-medium text-subtitle">Forgot your password?</p>
                     <p className="font-tabular text-small mb-6">No worries! We'll send reset instructions.</p>
 
-                    <p className={"font-tabular text-small " + (errorMessage ? "text-red-pure" : "invisible")}>
-                        {errorMessage || "Placeholder"}
-                    </p>
-
                     <form onSubmit={handleSubmit(onSubmit)}>
 
                         {/* Email */}
@@ -63,7 +72,11 @@ function ResetUser({ goToPage }: ResetUserProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Reset password" />
+                            {
+                                loading
+                                ? <ButtonWithLoader text="Sending email" />
+                                : <Button text="Send email" />
+                            }
                         </div>
                     </form>
 

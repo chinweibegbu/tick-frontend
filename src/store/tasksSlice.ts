@@ -5,7 +5,8 @@ import { TaskModel } from "../models";
 const initialState = {
   tasks: [] as TaskModel[],
   currentTask: {} as TaskModel,
-  loading: false
+  loading: false,
+  errorMessage: ""
 };
 
 /*
@@ -31,7 +32,7 @@ export const fetchTasks = createAsyncThunk
       // --> Case #1a: API calls return object has `error` property
       if (error) {
         // `rejectWithValue()` takes an argument that is of the type defined in the `createAsyncThunk()` type arguments
-        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to fetch tasks");
       }
 
       // --> Case #1b: API calls return object has `data` property
@@ -65,7 +66,7 @@ export const fetchTasksByUserId = createAsyncThunk
       // --> Case #1a: API calls return object has `error` property
       if (error) {
         // `rejectWithValue()` takes an argument that is of the type defined in the `createAsyncThunk()` type arguments
-        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to fetch your tasks");
       }
 
       // --> Case #1b: API calls return object has `data` property
@@ -98,7 +99,7 @@ export const addTask = createAsyncThunk
       const { data, error } = await addTaskApiCall(values.token, values.newTask);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to add new task");
       }
 
       if (data) {
@@ -127,7 +128,7 @@ export const editTask = createAsyncThunk
       const { data, error } = await editTaskApiCall(values.token, values.updatedTask);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to edit task");
       }
 
       if (data) {
@@ -156,7 +157,7 @@ export const toggleCompleteTask = createAsyncThunk
       const { data, error } = await toggleCompleteTaskApiCall(values.token, values.taskId);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to toggle task completion");
       }
 
       if (data) {
@@ -185,7 +186,7 @@ export const deleteTask = createAsyncThunk
       const { data, error } = await deleteTaskApiCall(values.token, values.taskId);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to delete task");
       }
 
       if (data) {
@@ -211,7 +212,7 @@ const tasksSlice = createSlice({
       if (existingTask) {
         state.currentTask = existingTask;
       } else {
-        console.log("Something is wrong");
+        state.errorMessage = "Task does not exist"
       }
     }
   },
@@ -235,8 +236,9 @@ const tasksSlice = createSlice({
       )
       .addCase(
         fetchTasks.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("fetchTasks() failed");
         }
       )
@@ -259,8 +261,9 @@ const tasksSlice = createSlice({
       )
       .addCase(
         fetchTasksByUserId.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("fetchTasksByUserId() failed");
         }
       )
@@ -282,8 +285,9 @@ const tasksSlice = createSlice({
       )
       .addCase(
         addTask.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("addTask() failed");
         }
       )
@@ -305,8 +309,9 @@ const tasksSlice = createSlice({
       )
       .addCase(
         editTask.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("editTask() failed");
         }
       )
@@ -328,8 +333,9 @@ const tasksSlice = createSlice({
       )
       .addCase(
         toggleCompleteTask.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("toggleCompleteTask() failed");
         }
       )
@@ -351,8 +357,9 @@ const tasksSlice = createSlice({
       )
       .addCase(
         deleteTask.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("deleteTask() failed");
         }
       );

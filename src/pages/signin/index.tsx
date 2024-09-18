@@ -3,24 +3,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { authenticateUser } from "../../store/usersSlice";
+import { authenticateUser, resetState } from "../../store/usersSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { SigninFormSchema } from "../../schemas";
 import { SigninProps, SigninFormValues } from "../../models";
 
 import Button from "../../components/Button";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
 import LinkText from "../../components/LinkText";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
 function Signin({ goToPage }: SigninProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
         register,
+        setValue,
         formState: { errors },
     } = useForm<SigninFormValues>({ resolver: yupResolver(SigninFormSchema) });
 
@@ -30,6 +33,12 @@ function Signin({ goToPage }: SigninProps) {
             .then((response) => {
                 if (response.type === "authenticateUser/fulfilled") {
                     goToPage(MouseEvent, "dashboard");
+                }
+                if ((response.type === "addUser/rejected")) {
+                    // Toggle error toast
+                    notifyError(errorMessage);
+                    setValue("password", "");
+                    dispatch(resetState());
                 }
             });
     }
@@ -52,10 +61,6 @@ function Signin({ goToPage }: SigninProps) {
 
                     <p className="font-exo font-medium text-subtitle">Sign in to Tick</p>
                     <p className="font-tabular text-small mb-6">Manage your tasks with ease and efficiency!</p>
-
-                    <p className={"font-tabular text-small " + (errorMessage ? "text-red-pure" : "invisible")}>
-                        {errorMessage || "Placeholder"}
-                    </p>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -85,7 +90,11 @@ function Signin({ goToPage }: SigninProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Log in" />
+                            {
+                                loading
+                                    ? <ButtonWithLoader text="Logging in" />
+                                    : <Button text="Log in" />
+                            }
                             <div className="flex justify-center">
                                 <p className="font-tabular text-small">Don't have an account yet?</p>
                                 &nbsp;

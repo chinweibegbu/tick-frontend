@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { resetPassword } from "../../store/usersSlice";
+import { resetPassword, resetState} from "../../store/usersSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { ResetPasswordFormSchema } from "../../schemas";
 import { ResetPasswordProps, ResetPasswordFormValues } from "../../models";
 
 import Button from "../../components/Button";
+import ButtonWithLoader from "../../components/ButtonWithLoader";
+import { notifyError } from "../../utils/notifications";
 
 // ----------------------  END IMPORTS ---------------------------------
 
@@ -17,7 +19,7 @@ function ResetPassword({ goToPage }: ResetPasswordProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [searchParams, _] = useSearchParams();
 
-    const { errorMessage } = useSelector((state: RootState) => state.usersReducer);
+    const { errorMessage, loading } = useSelector((state: RootState) => state.usersReducer);
 
     const {
         handleSubmit,
@@ -40,7 +42,15 @@ function ResetPassword({ goToPage }: ResetPasswordProps) {
                     goToPage(MouseEvent, "/");
                 }
             });
+
     }
+
+    useEffect(() => {
+        if (errorMessage) {
+            notifyError(errorMessage);
+            dispatch(resetState());
+        }
+    }, [errorMessage]);
 
     const [showPassword, setShowPassword] = useState(false);
     const togglePassword = () => {
@@ -63,10 +73,6 @@ function ResetPassword({ goToPage }: ResetPasswordProps) {
                 <div className="md:w-[60vw] lg:w-[40vw] p-4 bordered mx-auto">
 
                     <p className="font-exo font-medium text-subtitle">Reset your password</p>
-
-                    <p className={"font-tabular text-small " + (errorMessage ? "text-red-pure" : "invisible")}>
-                        {errorMessage || "Placeholder"}
-                    </p>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -98,7 +104,11 @@ function ResetPassword({ goToPage }: ResetPasswordProps) {
 
                         {/* Submit button */}
                         <div className="w-full text-center pt-6">
-                            <Button text="Submit" />
+                            {
+                                loading
+                                    ? <ButtonWithLoader text="Resetting password" />
+                                    : <Button text="Reset password" />
+                            }
                         </div>
                     </form>
 

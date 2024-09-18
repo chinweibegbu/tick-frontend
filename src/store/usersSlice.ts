@@ -5,8 +5,7 @@ import { SigninFormValues, SignupFormValues, ResetUserFormValues, UserModel, Res
 const initialState = {
   currentUser: {} as UserModel,
   loading: false,
-  errorMessage: "",
-  signUpErrorMessage: ""
+  errorMessage: ""
 };
 
 /*
@@ -63,7 +62,7 @@ export const logoutUser = createAsyncThunk
       const { data, error } = await logoutApiCall(values.token);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to logout user");
       }
 
       if (data) {
@@ -89,7 +88,7 @@ export const addUser = createAsyncThunk
       const { data, error } = await addUserApiCall(values);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to register user");
       }
 
       if (data) {
@@ -115,7 +114,7 @@ export const resetUser = createAsyncThunk
       const { data, error } = await sendResetUserEmailApiCall(values);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to send email");
       }
 
       if (data) {
@@ -141,7 +140,7 @@ export const resetPassword = createAsyncThunk
       const { data, error } = await resetPasswordApiCall(values);
 
       if (error) {
-        return thunkApi.rejectWithValue(error.response?.data.message ?? "an error occurred");
+        return thunkApi.rejectWithValue(error.response?.data.message ?? "Failed to reset password");
       }
 
       if (data) {
@@ -159,7 +158,11 @@ export const resetPassword = createAsyncThunk
 const usersSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    resetState: (state) => {
+      state.errorMessage = "";
+    }
+  },
   extraReducers: (builder) => {
     builder
 
@@ -168,6 +171,7 @@ const usersSlice = createSlice({
         authenticateUser.pending,
         (state) => {
           state.loading = true;
+          state.errorMessage = "";
           console.log("authenticateUser() pending...");
         }
       )
@@ -183,9 +187,9 @@ const usersSlice = createSlice({
       )
       .addCase(
         authenticateUser.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
-          state.errorMessage = "Incorrect email or password";
+          state.errorMessage = action.payload!;
           console.log("authenticateUser() failed");
         }
       )
@@ -195,6 +199,7 @@ const usersSlice = createSlice({
         logoutUser.pending,
         (state) => {
           state.loading = true;
+          state.errorMessage = "";
           console.log("logoutUser() pending...");
         }
       )
@@ -210,8 +215,9 @@ const usersSlice = createSlice({
       )
       .addCase(
         logoutUser.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("logoutUser() failed");
         }
       )
@@ -221,6 +227,7 @@ const usersSlice = createSlice({
         addUser.pending,
         (state) => {
           state.loading = true;
+          state.errorMessage = "";
           console.log("addUser() pending...");
         }
       )
@@ -228,6 +235,7 @@ const usersSlice = createSlice({
         addUser.fulfilled,
         (state) => {
           state.loading = false;
+          state.errorMessage = "";
           console.log("addUser() successful!");
         }
       )
@@ -235,7 +243,7 @@ const usersSlice = createSlice({
         addUser.rejected,
         (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
-          state.signUpErrorMessage = action.payload!;
+          state.errorMessage = action.payload!;
           console.log("addUser() failed");
         }
       )
@@ -245,6 +253,7 @@ const usersSlice = createSlice({
         resetUser.pending,
         (state) => {
           state.loading = true;
+          state.errorMessage = "";
           console.log("resetUser() pending...");
         }
       )
@@ -252,6 +261,7 @@ const usersSlice = createSlice({
         resetUser.fulfilled,
         (state) => {
           state.loading = false;
+          state.errorMessage = "";
           console.log("resetUser() successful!");
         }
       )
@@ -259,7 +269,7 @@ const usersSlice = createSlice({
         resetUser.rejected,
         (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
-          state.signUpErrorMessage = action.payload!;
+          state.errorMessage = action.payload!;
           console.log("resetUser() failed");
         }
       )
@@ -269,6 +279,7 @@ const usersSlice = createSlice({
         resetPassword.pending,
         (state) => {
           state.loading = true;
+          state.errorMessage = "";
           console.log("resetPassword() pending...");
         }
       )
@@ -276,19 +287,21 @@ const usersSlice = createSlice({
         resetPassword.fulfilled,
         (state) => {
           state.loading = false;
+          state.errorMessage = "";
           console.log("resetPassword() successful!");
         }
       )
       .addCase(
         resetPassword.rejected,
-        (state) => {
+        (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
+          state.errorMessage = action.payload!;
           console.log("resetPassword() failed");
         }
       );
   },
 });
 
-export const { } = usersSlice.actions;
+export const { resetState } = usersSlice.actions;
 
 export default usersSlice.reducer;
